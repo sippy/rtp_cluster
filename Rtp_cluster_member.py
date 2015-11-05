@@ -68,7 +68,7 @@ class Rtp_cluster_member(Rtp_proxy_client):
         self.call_id_map_old = []
         self.name = name
         self.global_config = global_config
-        self.asess_filtered = rc_filter(0.9)
+        self.asess_filtered = rc_filter(0.5)
         self.cmd_out_address = cmd_out_address
         self.stats_cache = {}
         if cmd_out_address != None:
