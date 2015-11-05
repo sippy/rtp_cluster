@@ -43,7 +43,6 @@ RTP Cluster provides administration CLI interface allowing to change cluster con
 Example:
 
 1. Get list of configured clusters:
-
 ```
 $ ./rtp_cluster_client.py ls
 Cluster: #0
@@ -59,9 +58,7 @@ Cluster: #1
     inactive members = 2
 OK
 ```
-
 2. Get detailed information about `Supercluster#1` cluster:
-
 ```
 $ ./rtp_cluster_client.py 'ls Supercluster#1'
 Active members of the cluster #0:
