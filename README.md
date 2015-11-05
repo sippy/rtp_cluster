@@ -18,8 +18,10 @@ Configuration is performed by the rtp_cluster.xml file. Example is available in 
 
 The server can be started as follows:
 
+```
 $ cd some/dir/rtp_cluster
 $ python rtp_cluster.py
+```
 
 By default the software will become a daemon and run in background. All error messages and exceptions can be found in the /var/log/rtp_cluster.log. In order to run in the foreground mode one has to specify .-f. flag when starting rtp_cluster.py.
 
@@ -40,6 +42,7 @@ Example:
 
 1. Get list of configured clusters:
 
+```
 [sobomax@pioneer ~/sobosip/rtp_cluster]$ sudo ./rtp_cluster_client.py ls
 Cluster: #0
     name = Supercluster#1
@@ -53,9 +56,11 @@ Cluster: #1
     active members = 0
     inactive members = 2
 OK
+```
 
 2. Get detailed information about .Supercluster#1. cluster:
 
+```
 [sobomax@pioneer ~/sobosip/rtp_cluster]$ sudo ./rtp_cluster_client.py 'ls Supercluster#1'
 Active members of the cluster #0:
     RTPproxy: #0
@@ -79,16 +84,21 @@ Active members of the cluster #0:
 Inactive members of the cluster #0:
 
 OK
+```
 
-3. Add new proxy to the .Supercluster#2.:
+3. Add new proxy to the "Supercluster#2":
 
+```
 [sobomax@pioneer ~/sobosip/rtp_cluster]$ sudo ./rtp_cluster_client.py 'modify Supercluster#2 add name=another_proxy,protocol=udp,address=1.2.3.4:567,capacity=120,weight=300'                 
 OK
+```
 
 4. Gracefully remove .RTPPROXY2. from .Supercluster#1.:
 
+```
 [sobomax@pioneer ~/sobosip/rtp_cluster]$ sudo ./rtp_cluster_client.py 'modify Supercluster#1 delete RTPPROXY2'
 OK
+```
 
 ## Current Limitations
 
