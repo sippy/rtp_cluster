@@ -31,10 +31,10 @@ from DNRelay import DNRelay
 import sys
 sys.path.append('..')
 
-from sippy.Cli_server_local import Cli_server_local
-from sippy.Udp_server import Udp_server, Udp_server_opts
-from sippy.Rtp_proxy_cmd import Rtp_proxy_cmd, Rtpp_stats
-from sippy.Timeout import Timeout
+from sippy_lite.Cli_server_local import Cli_server_local
+from sippy_lite.Udp_server import Udp_server, Udp_server_opts
+from sippy_lite.Rtp_proxy_cmd import Rtp_proxy_cmd, Rtpp_stats
+from sippy_lite.Timeout import Timeout
 
 from random import random
 

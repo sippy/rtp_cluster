@@ -42,10 +42,10 @@ from twisted.internet import reactor
 
 sys.path.append('sippy')
 
-from sippy.SipConf import MyAddress
-from sippy.Cli_server_local import Cli_server_local
-from sippy.SipLogger import SipLogger
-from sippy.misc import daemonize
+from sippy_lite.SipConf import MyAddress
+from sippy_lite.Cli_server_local import Cli_server_local
+from sippy_lite.SipLogger import SipLogger
+from sippy_lite.misc import daemonize
 
 class ClusterCLI(object):
     ccm = None

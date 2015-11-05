@@ -263,7 +263,7 @@ if __name__ == '__main__':
 
     sys.path.append('sippy')
 
-    from sippy.SipLogger import SipLogger
+    from sippy_lite.SipLogger import SipLogger
 
     global_config = {}
     global_config['_sip_logger'] = SipLogger('Rtp_cluster_config::selftest')

@@ -25,8 +25,8 @@
 
 from time import strftime, gmtime, localtime
 
-from sippy.Math.recfilter import recfilter
-from sippy.Time.clock_dtime import clock_getdtime, CLOCK_REALTIME, CLOCK_MONOTONIC
+from sippy_lite.Math.recfilter import recfilter
+from sippy_lite.Time.clock_dtime import clock_getdtime, CLOCK_REALTIME, CLOCK_MONOTONIC
 from threading import local
 
 class MonoGlobals(local):
