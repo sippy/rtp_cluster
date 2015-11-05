@@ -9,6 +9,8 @@ From the point of view of the signaling component, the RTP Cluster appears to be
 One process can support more than one cluster, each on different control socket.
 
 The following diagram illustrates the high level design of the software.
+
+![Alt text](https://docs.google.com/drawings/d/1FNrR8uRY5TeNBhVDLRM2eNYX363QD9aYMLb8GsALHdk/pub?w=800&h=600 "RTP Custer, high-level diagram")
  
 ## Installation and configuration
 
