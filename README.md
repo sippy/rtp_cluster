@@ -45,7 +45,7 @@ Example:
 1. Get list of configured clusters:
 
 ```
-[sobomax@pioneer ~/sobosip/rtp_cluster]$ sudo ./rtp_cluster_client.py ls
+$ ./rtp_cluster_client.py ls
 Cluster: #0
     name = Supercluster#1
     address = /var/run/rtpproxy.sock
@@ -63,7 +63,7 @@ OK
 2. Get detailed information about .Supercluster#1. cluster:
 
 ```
-[sobomax@pioneer ~/sobosip/rtp_cluster]$ sudo ./rtp_cluster_client.py 'ls Supercluster#1'
+$ ./rtp_cluster_client.py 'ls Supercluster#1'
 Active members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY1
@@ -91,14 +91,14 @@ OK
 3. Add new proxy to the "Supercluster#2":
 
 ```
-[sobomax@pioneer ~/sobosip/rtp_cluster]$ sudo ./rtp_cluster_client.py 'modify Supercluster#2 add name=another_proxy,protocol=udp,address=1.2.3.4:567,capacity=120,weight=300'                 
+$ ./rtp_cluster_client.py 'modify Supercluster#2 add name=another_proxy,protocol=udp,address=1.2.3.4:567,capacity=120,weight=300'                 
 OK
 ```
 
 4. Gracefully remove .RTPPROXY2. from .Supercluster#1.:
 
 ```
-[sobomax@pioneer ~/sobosip/rtp_cluster]$ sudo ./rtp_cluster_client.py 'modify Supercluster#1 delete RTPPROXY2'
+$ ./rtp_cluster_client.py 'modify Supercluster#1 delete RTPPROXY2'
 OK
 ```
 
