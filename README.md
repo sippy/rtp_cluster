@@ -60,7 +60,7 @@ Cluster: #1
 OK
 ```
 
-2. Get detailed information about .Supercluster#1. cluster:
+2. Get detailed information about `Supercluster#1` cluster:
 
 ```
 $ ./rtp_cluster_client.py 'ls Supercluster#1'
@@ -88,14 +88,14 @@ Inactive members of the cluster #0:
 OK
 ```
 
-3. Add new proxy to the "Supercluster#2":
+3. Add new proxy to the `Supercluster#2`:
 
 ```
 $ ./rtp_cluster_client.py 'modify Supercluster#2 add name=another_proxy,protocol=udp,address=1.2.3.4:567,capacity=120,weight=300'                 
 OK
 ```
 
-4. Gracefully remove .RTPPROXY2. from .Supercluster#1.:
+4. Gracefully remove `RTPPROXY2` node from `Supercluster#1`:
 
 ```
 $ ./rtp_cluster_client.py 'modify Supercluster#1 delete RTPPROXY2'
