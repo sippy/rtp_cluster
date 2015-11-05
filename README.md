@@ -42,7 +42,7 @@ RTP Cluster provides administration CLI interface allowing to change cluster con
 
 Example:
 
- 1. Get list of configured clusters:
+- Get list of configured clusters:
 ```
 $ ./rtp_cluster_client.py ls
 Cluster: #0
@@ -58,7 +58,7 @@ Cluster: #1
     inactive members = 2
 OK
 ```
- 2. Get detailed information about `Supercluster#1` cluster:
+- Get detailed information about `Supercluster#1` cluster:
 ```
 $ ./rtp_cluster_client.py 'ls Supercluster#1'
 Active members of the cluster #0:
@@ -85,23 +85,16 @@ Inactive members of the cluster #0:
 OK
 ```
 
-3. Add new proxy to the `Supercluster#2`:
+- Add new proxy to the `Supercluster#2`:
 
 ```
 $ ./rtp_cluster_client.py 'modify Supercluster#2 add name=another_proxy,protocol=udp,address=1.2.3.4:567,capacity=120,weight=300'                 
 OK
 ```
 
-4. Gracefully remove `RTPPROXY2` node from `Supercluster#1`:
+- Gracefully remove `RTPPROXY2` node from `Supercluster#1`:
 
 ```
 $ ./rtp_cluster_client.py 'modify Supercluster#1 delete RTPPROXY2'
 OK
 ```
-
-## Current Limitations
-
-1. Cluster can only use unix domain socket for communicating with signaling component.
-2. Commands are case-sensitive. It.s suggested to use lower case to avoid any issues.
-3. Location of the configuration file is hardcoded and cannot be changed without modifying the source code.
-4. There is no command to create a cluster in run-time.
