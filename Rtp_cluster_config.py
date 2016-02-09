@@ -64,7 +64,10 @@ class ValidateHandler(ContentHandler):
     def startElement(self, name, attrs):
         self.element = name
 
-        if self.element == 'rtp_cluster':
+        if self.element == 'rtp_cluster_config':
+            self.ctx.append('rtp_cluster_config')
+
+        elif self.element == 'rtp_cluster':
             self.rtp_cluster = {'rtpproxies': []}
             self.config.append(self.rtp_cluster)
             self.ctx.append('rtp_cluster')
@@ -102,11 +105,11 @@ class ValidateHandler(ContentHandler):
                 if self.rtp_cluster['protocol'] == 'udp':
                     content = content.split(':', 1)
                     if len(content) == 1:
-                        self.rtp_cluster['address'] = (content[0], 22222)
+                        self.rtp_cluster['address'] = (content[0].encode('ascii'), 22222)
                     else:
-                        self.rtp_cluster['address'] = (content[0], int(content[1]))
+                        self.rtp_cluster['address'] = (content[0].encode('ascii'), int(content[1]))
                 else:
-                    self.rtp_cluster['address'] = content
+                    self.rtp_cluster['address'] = content.encode('ascii')
 
         elif self.ctx[-1] == 'rtpproxy':
             if self.element == 'name':
@@ -120,13 +123,13 @@ class ValidateHandler(ContentHandler):
                 if self.rtpproxy['protocol'] != 'udp' and self.rtpproxy['protocol'] != 'unix':
                     raise Exception("rtpproxy protocol should be either 'udp' or 'unix'")
             elif self.element == 'address':
-                self.rtpproxy['address'] = content
+                self.rtpproxy['address'] = content.encode('ascii')
             elif self.element == 'wan_address':
-                self.rtpproxy['wan_address'] = content
+                self.rtpproxy['wan_address'] = content.encode('ascii')
             elif self.element == 'lan_address':
-                self.rtpproxy['lan_address'] = content
+                self.rtpproxy['lan_address'] = content.encode('ascii')
             elif self.element == 'cmd_out_address':
-                self.rtpproxy['cmd_out_address'] = content
+                self.rtpproxy['cmd_out_address'] = content.encode('ascii')
             elif self.element == 'weight':
                 try:
                     self.rtpproxy['weight'] = int(content)
@@ -165,6 +168,9 @@ class ValidateHandler(ContentHandler):
             self.dnconfig = None
             self.ctx.pop()
 
+        elif name == self.element:
+            self.element = None
+
     def warning(self, exception):
         self.warnings.append(exception)
 
@@ -177,28 +183,33 @@ class ValidateHandler(ContentHandler):
 def read_cluster_config(global_config, config, debug = False):
     parsed_config = []
 
-    parser = make_parser('xml.sax.drivers2.drv_xmlproc')
+    parser = make_parser(['xml.sax.drivers2.drv_xmlproc',])
     parser.setFeature(feature_namespaces, False)
-    parser.setFeature(feature_validation, True)
+    try:
+        parser.setFeature(feature_validation, True)
+        validation_supported = True
+    except:
+        validation_supported = False
 
     h = ValidateHandler(parsed_config)
     parser.setContentHandler(h)
     parser.setErrorHandler(h)
 
-    try:
-        dir_name = dirname(__file__)
-        if dir_name == '':
-            dtd = RTP_CLUSTER_CONFIG_DTD
-        else:
-            dtd = dir_name + '/' + RTP_CLUSTER_CONFIG_DTD
-        f = open(dtd)
-        dtd = f.read()
-        parser.feed(dtd)
+    if validation_supported:
+        try:
+            dir_name = dirname(__file__)
+            if dir_name == '':
+                dtd = RTP_CLUSTER_CONFIG_DTD
+            else:
+                dtd = dir_name + '/' + RTP_CLUSTER_CONFIG_DTD
+            f = open(dtd)
+            dtd = f.read()
+            parser.feed(dtd)
+        except Exception, detail:
+            raise Exception('validation failed: %s' % (detail))
 
-        parser.feed(config)
-        parser.close()
-    except Exception, detail:
-        raise Exception('parsing failed: %s' % (detail))
+    parser.feed(config)
+    parser.close()
 
     if h.warnings:
         for warning in h.warnings:
