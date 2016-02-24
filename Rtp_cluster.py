@@ -145,8 +145,8 @@ class Rtp_cluster(object):
         if cresp != None:
             response = '%s %s' % (cookie, cresp)
             server.send_to(response, address)
-            print('Rtp_cluster.up_command_udp(): sending cached response "%s" to %s' % \
-              (response[:-1], address))
+            self.global_config['_sip_logger'].write('Rtp_cluster.up_command_udp(): '
+              'sending cached response "%s" to %s' % (response[:-1], address))
             return
         self.commands_inflight.append(cookie)
         clim = UdpCLIM(address, cookie, server)
@@ -322,7 +322,8 @@ class Rtp_cluster(object):
         #print 'merge_stats_results, result', result
         if result == None:
             result = rtpp.stats_cache.get(br.sobj.all_names, 'E994')
-            print 'merge_stats_results: getting from the cache %s' % result
+            self.global_config['_sip_logger'].write('merge_stats_results: node "%s": ' \
+              'getting from the cache "%s"' % (rtpp.name, result))
         elif result[0].upper() != 'E':
             rtpp.stats_cache[br.sobj.all_names] = result
         if br != None and not result[0].upper() == 'E':
@@ -364,7 +365,8 @@ class Rtp_cluster(object):
                     max_rtpp, max_weight = rtpp, weight
             #print 'pick_proxyNG: picked up %s for the call %s (overload)' % (max_rtpp.name, call_id)
             return max_rtpp
-        print 'pick_proxyNG: OUCH, no proxies to pickup from for the call %s' % (call_id,)
+        self.global_config['_sip_logger'].write('pick_proxyNG: OUCH, no proxies to ' \
+          'pickup from for the call %s' % (call_id,))
         return None
 
     def rtpp_status_change(self, rtpp, online):
