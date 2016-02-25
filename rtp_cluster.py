@@ -44,6 +44,7 @@ sys.path.append('sippy')
 
 from sippy_lite.SipConf import MyAddress
 from sippy_lite.Cli_server_local import Cli_server_local
+from sippy_lite.Signal import LogSignal
 from sippy_lite.SipLogger import SipLogger
 from sippy_lite.misc import daemonize
 
@@ -302,6 +303,17 @@ def debug_signal(signum, frame):
     for thread_id, stack in sys._current_frames().iteritems():
         print 'Thread id: %s\n%s' % (thread_id, ''.join(traceback.format_stack(stack)))
 
+def reopen(signum, logfile):
+    print 'Signal %d received, reopening logs' % signum
+    if logfile == None:
+        return
+    fake_stdout = file(logfile, 'a', 1)
+    sys.stdout = fake_stdout
+    sys.stderr = fake_stdout
+    fd = fake_stdout.fileno()
+    os.dup2(fd, sys.__stdout__.fileno())
+    os.dup2(fd, sys.__stderr__.fileno())
+
 if __name__ == '__main__':
     global_config = {}
 
@@ -367,6 +379,7 @@ if __name__ == '__main__':
         file(pidfile, 'w').write(str(os.getpid()) + '\n')
         sip_logger = SipLogger('rtp_cluster')
         global_config['_sip_logger'] = sip_logger
+        LogSignal(sip_logger, signal.SIGUSR1, reopen, logfile)
 
     sip_logger.write(' o initializing CLI...')
 
