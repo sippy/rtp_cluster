@@ -51,14 +51,15 @@ class Rtpp_caps_checker(object):
             rtpc.send_command('VF %s' % vers, self.caps_query_done, vers)
 
     def caps_query_done(self, result, vers):
-        self.caps_received -= 1
+        self.caps_received += 1
         vname = CAPSTABLE[vers]
         if result == '1':
             setattr(self.rtpc, vname, True)
         else:
             setattr(self.rtpc, vname, False)
-        if self.caps_received == 0:
+        if self.caps_received == self.caps_requested:
             self.rtpc.caps_done = True
+            self.rtpc.go_online()
             self.rtpc = None
 
 class Rtp_proxy_client(Rtp_proxy_client_udp, Rtp_proxy_client_stream):
@@ -156,7 +157,7 @@ class Rtp_proxy_client(Rtp_proxy_client_udp, Rtp_proxy_client_stream):
             self.rtpp_class = Rtp_proxy_client_udp
             Rtp_proxy_client_udp.__init__(self, global_config, *address, \
               **kwargs)
-            self.proxy_address = address[0]
+            self.proxy_address = address[0][0]
         else:
             self.rtpp_class = Rtp_proxy_client_stream
             Rtp_proxy_client_stream.__init__(self, global_config, *address, \
@@ -225,7 +226,9 @@ class Rtp_proxy_client(Rtp_proxy_client_udp, Rtp_proxy_client_stream):
         if self.shut_down:
             return
         if not self.online:
-            rtpp_cc = Rtpp_caps_checker(self)
+            if not self.caps_done:
+                rtpp_cc = Rtpp_caps_checker(self)
+                return
             self.online = True
             self.heartbeat()
 
