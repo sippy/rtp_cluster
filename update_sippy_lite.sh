@@ -10,4 +10,4 @@ git checkout master
 git pull
 git merge sippy_git_master_toplevel
 git commit
-#git push
+git push
