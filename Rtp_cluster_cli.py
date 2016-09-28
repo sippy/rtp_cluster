@@ -229,6 +229,7 @@ class Rtp_cluster_cli(object):
                             rtpp.wan_address = rtpp_config['wan_address']
                         if rtpp_config.has_key('lan_address'):
                             rtpp.lan_address = rtpp_config['lan_address']
+                        rtpp.status = rtpp_config['status'].upper()
                         rtp_cluster.add_member(rtpp)
                     else:
                         if rtpp_config.has_key('cmd_out_address'):
@@ -246,6 +247,7 @@ class Rtp_cluster_cli(object):
                             rtpp.lan_address = rtpp_config['lan_address']
                         else:
                             rtpp.lan_address = None
+                        rtpp.status = rtpp_config['status'].upper()
                     new_rtpps.append(rtpp)
                 new_rtpps_count += len(new_rtpps)
                 for rtpp in [x for x in rtp_cluster.all_members() if x not in new_rtpps]:
