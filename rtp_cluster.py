@@ -34,6 +34,7 @@ import sys
 import signal
 from pwd import getpwnam
 from grp import getgrnam
+from socket import AF_INET, AF_INET6, AF_UNIX
 
 from twisted.internet import reactor
 
@@ -154,22 +155,27 @@ if __name__ == '__main__':
         for rtpp_config in c['rtpproxies']:
             sip_logger.write('  - adding RTPproxy member %s at <%s>' % (rtpp_config['name'], rtpp_config['address']))
             #Rtp_cluster_member('rtpproxy1', global_config, ('127.0.0.1', 22222))
-            if rtpp_config['protocol'] not in ('unix', 'udp'):
+            if rtpp_config['protocol'] not in ('unix', 'udp', 'udp6'):
                 raise Exception('Unsupported RTPproxy protocol: "%s"' % rtpp_config['protocol'])
-            if rtpp_config['protocol'] == 'udp':
-                address = rtpp_config['address'].split(':', 1)
+            if rtpp_config['protocol'] in ('udp', 'udp6'):
+                address = rtpp_config['address'].rsplit(':', 1)
                 if len(address) == 1:
                     address.append(22222)
                 else:
                     address[1] = int(address[1])
                 address = tuple(address)
+                if rtpp_config['protocol'] == 'udp':
+                    family = AF_INET
+                else:
+                    family = AF_INET6
             else:
                 address = rtpp_config['address']
+                family = AF_UNIX
             if rtpp_config.has_key('cmd_out_address'):
                 bind_address = rtpp_config['cmd_out_address']
             else:
                 bind_address = None
-            rtpp = Rtp_cluster_member(rtpp_config['name'], global_config, address, bind_address)
+            rtpp = Rtp_cluster_member(rtpp_config['name'], global_config, address, bind_address, family = family)
             rtpp.weight = rtpp_config['weight']
             rtpp.capacity = rtpp_config['capacity']
             if rtpp_config.has_key('wan_address'):

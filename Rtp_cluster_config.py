@@ -99,11 +99,11 @@ class ValidateHandler(ContentHandler):
                 self.rtp_cluster['name'] = content
             elif self.element == 'protocol':
                 self.rtp_cluster['protocol'] = content.lower()
-                if self.rtp_cluster['protocol'] != 'udp' and self.rtp_cluster['protocol'] != 'unix':
-                    raise Exception("rtp_cluster protocol should be either 'udp' or 'unix'")
+                if self.rtp_cluster['protocol'] not in ('udp', 'unix', 'udp6'):
+                    raise Exception("rtp_cluster protocol should be one of 'udp', 'udp6' or 'unix'")
             elif self.element == 'address':
-                if self.rtp_cluster['protocol'] == 'udp':
-                    content = content.split(':', 1)
+                if self.rtp_cluster['protocol'] in ('udp', 'udp6'):
+                    content = content.rsplit(':', 1)
                     if len(content) == 1:
                         self.rtp_cluster['address'] = (content[0].encode('ascii'), 22222)
                     else:
@@ -120,8 +120,8 @@ class ValidateHandler(ContentHandler):
                 self.rtpproxy['name'] = content
             elif self.element == 'protocol':
                 self.rtpproxy['protocol'] = content.lower()
-                if self.rtpproxy['protocol'] != 'udp' and self.rtpproxy['protocol'] != 'unix':
-                    raise Exception("rtpproxy protocol should be either 'udp' or 'unix'")
+                if self.rtpproxy['protocol'] not in ('udp', 'unix', 'udp6'):
+                    raise Exception("rtpproxy protocol should be one of 'udp', 'udp6' or 'unix'")
             elif self.element == 'address':
                 self.rtpproxy['address'] = content.encode('ascii')
             elif self.element == 'wan_address':
@@ -234,7 +234,7 @@ def gen_cluster_config(config):
         xml += '    <protocol>%s</protocol>\n' % escape(cluster['protocol'])
 
         address = cluster['address']
-        if cluster['protocol'] == 'udp':
+        if cluster['protocol'] in ('udp', 'udp6'):
             xml += '    <address>%s:%d</address>\n\n' % (escape(address[0]), address[1])
         else:
             xml += '    <address>%s</address>\n\n' % escape(address)

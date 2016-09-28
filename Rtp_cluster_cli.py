@@ -29,6 +29,7 @@ from Rtp_cluster_config import read_cluster_config
 from Rtp_cluster import Rtp_cluster
 from Rtp_cluster_member import Rtp_cluster_member
 
+from socket import AF_INET, AF_INET6, AF_UNIX
 from contrib.objgraph import typestats
 import operator
 
@@ -59,22 +60,27 @@ class Rtp_cluster_cli(object):
             if len(parts) == 1:
                 idx = 0
                 for rtp_cluster in self.rtp_clusters:
+                    nonline = len(rtp_cluster.active)
+                    nsuspended = len([x for x in rtp_cluster.active if x.status == 'SUSPENDED'])
+                    ndraining = len([x for x in rtp_cluster.active if x.status == 'DRAINING'])                    
                     if idx > 0:
                         clim.send('\n')                
                     clim.send('Cluster: #%d\n' % idx)
                     clim.send('    name = %s\n' % rtp_cluster.name)
                     clim.send('    address = %s\n' % str(rtp_cluster.address))
-                    clim.send('    active members = %d\n' % len(rtp_cluster.active))
-                    clim.send('    inactive members = %d\n' % len(rtp_cluster.pending))
+                    clim.send('    online members = %d (%d active, %d suspended, %d draining)\n' % \
+                      (nonline, nonline - nsuspended - ndraining, nsuspended, \
+                      ndraining))
+                    clim.send('    offline members = %d\n' % len(rtp_cluster.pending))
                     idx += 1
             else:
                 rtp_cluster, idx = self.cluster_by_name(parts[1])
                 if rtp_cluster == None:
                     clim.send('ERROR: %s: cluster not found\n' % parts[1])
                     return False
-                clim.send('Active members of the cluster #%d:\n' % idx)
+                clim.send('Online members of the cluster #%d:\n' % idx)
                 ridx = 0
-                for rtpp in rtp_cluster.active:
+                for rtpp in sorted(rtp_cluster.active, key=lambda x: x.name):
                     if ridx > 0:
                         clim.send('\n')
                     clim.send(    '    RTPproxy: #%d\n' % ridx)
@@ -102,7 +108,7 @@ class Rtp_cluster_cli(object):
                         clim.send('offline\n')
                     clim.send('        status = %s\n' % rtpp.status)
                     ridx += 1
-                clim.send('\nInactive members of the cluster #%d:\n' % idx)
+                clim.send('\nOffline members of the cluster #%d:\n' % idx)
                 ridx = 0
                 for rtpp in rtp_cluster.pending:
                     if ridx > 0:
@@ -141,22 +147,28 @@ class Rtp_cluster_cli(object):
                 if rtpp != None:
                     clim.send('ERROR: %s: RTPproxy already exists\n' % rtpp_config['name'])
                     return False
-                if rtpp_config['protocol'] not in ('unix', 'udp'):
+                if rtpp_config['protocol'] not in ('unix', 'udp', 'udp6'):
                     raise Exception('Unsupported RTPproxy protocol: "%s"' % rtpp_config['protocol'])
-                if rtpp_config['protocol']  == 'udp':
-                    address = rtpp_config['address'].split(':', 1)
+                if rtpp_config['protocol'] in ('udp', 'udp6'):
+                    address = rtpp_config['address'].rsplit(':', 1)
                     if len(address) == 1:
                         address.append(22222)
                     else:
                         address[1] = int(address[1])
                     address = tuple(address)
+                    if rtpp_config['protocol'] == 'udp':
+                        family = AF_INET
+                    else:
+                        family = AF_INET6
                 else:
                     address = rtpp_config['address']
+                    family = AF_UNIX
                 if rtpp_config.has_key('cmd_out_address'):
                     bind_address = rtpp_config['cmd_out_address']
                 else:
                     bind_address = None
-                rtpp = Rtp_cluster_member(rtpp_config['name'], self.global_config, address, bind_address)
+                rtpp = Rtp_cluster_member(rtpp_config['name'], self.global_config, \
+                  address, bind_address, family = family)
                 if rtpp_config.has_key('wan_address'):
                     rtpp.wan_address = rtpp_config['wan_address']
                 if rtpp_config.has_key('lan_address'):
@@ -205,24 +217,30 @@ class Rtp_cluster_cli(object):
                 new_rtpps = []
                 for rtpp_config in c['rtpproxies']:
                     #Rtp_cluster_member('rtpproxy1', self.global_config, ('127.0.0.1', 22222))
-                    if rtpp_config['protocol'] not in ('unix', 'udp'):
+                    if rtpp_config['protocol'] not in ('unix', 'udp', 'udp6'):
                         raise Exception('Unsupported RTPproxy protocol: "%s"' % rtpp_config['protocol'])
-                    if rtpp_config['protocol'] == 'udp':
-                        address = rtpp_config['address'].split(':', 1)
+                    if rtpp_config['protocol'] in ('udp', 'udp6'):
+                        address = rtpp_config['address'].rsplit(':', 1)
                         if len(address) == 1:
                             address.append(22222)
                         else:
                             address[1] = int(address[1])
                         address = tuple(address)
+                        if rtpp_config['protocol'] == 'udp':
+                            family = AF_INET
+                        else:
+                            family = AF_INET6
                     else:
                         address = rtpp_config['address']
+                        family = AF_UNIX
                     rtpp, idx = rtp_cluster.rtpp_by_name(rtpp_config['name'])
                     if rtpp == None:
                         if rtpp_config.has_key('cmd_out_address'):
                             bind_address = rtpp_config['cmd_out_address']
                         else:
                             bind_address = None
-                        rtpp = Rtp_cluster_member(rtpp_config['name'], self.global_config, address, bind_address)
+                        rtpp = Rtp_cluster_member(rtpp_config['name'], self.global_config, \
+                          address, bind_address, family = family)
                         rtpp.weight = rtpp_config['weight']
                         rtpp.capacity = rtpp_config['capacity']
                         if rtpp_config.has_key('wan_address'):
