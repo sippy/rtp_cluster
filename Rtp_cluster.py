@@ -34,7 +34,7 @@ sys.path.append('..')
 from sippy_lite.Cli_server_local import Cli_server_local
 from sippy_lite.Udp_server import Udp_server, Udp_server_opts
 from sippy_lite.Rtp_proxy_cmd import Rtp_proxy_cmd, Rtpp_stats
-from sippy_lite.Timeout import Timeout
+from sippy_lite.Timeout import TimeoutInact
 
 from random import random
 
@@ -107,7 +107,9 @@ class Rtp_cluster(object):
         self.name = name
         self.address = address
         self.commands_inflight = []
-        self.cache_purge_el = Timeout(self.rCachePurge, 10, -1)
+        self.cache_purge_el = TimeoutInact(self.rCachePurge, 10, -1)
+        self.cache_purge_el.spread_runs(0.1)
+        self.cache_purge_el.go()
         self.update_dnrelay(dnconfig)
 
     def update_dnrelay(self, dnconfig):

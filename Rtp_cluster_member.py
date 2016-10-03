@@ -27,7 +27,7 @@ import sys
 sys.path.append('..')
 
 from sippy_lite.Rtp_proxy_client import Rtp_proxy_client
-from sippy_lite.Timeout import Timeout
+from sippy_lite.Timeout import TimeoutInact
 
 class rc_filter(object):
     a = None
@@ -77,7 +77,9 @@ class Rtp_cluster_member(Rtp_proxy_client):
             bind_address = None
         Rtp_proxy_client.__init__(self, global_config, address,
           bind_address = bind_address, **kwargs)
-        self.timer = Timeout(self.call_id_map_aging, 600, -1)
+        self.timer = TimeoutInact(self.call_id_map_aging, 600, -1)
+        self.timer.spread_runs(0.1)
+        self.timer.go()
 
     def reconnect(self, address):
         if self.cmd_out_address != None:
