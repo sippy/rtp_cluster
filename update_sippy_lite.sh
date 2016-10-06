@@ -15,8 +15,10 @@ do
   git mv ${f} sippy_lite/${f}
 done
 git rm .gitignore dictionary *.py
+git commit -m "Move files in place."
 git checkout master
 git pull
 git merge sippy_git_master_toplevel
-#git commit
-#git push
+git add sippy_lite/.gitignore rtp_cluster_client.py LICENSE
+git commit
+git push
