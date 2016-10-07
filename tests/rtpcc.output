@@ -1,0 +1,182 @@
+Cluster: #0
+    name = basic_network
+    address = ('127.0.0.1', 32324)
+    online members = 3 (3 active, 0 suspended, 0 draining)
+    offline members = 1
+OK
+Loaded 1 clusters and 4 RTP proxies
+OK
+Cluster: #0
+    name = basic_network
+    address = ('127.0.0.1', 32324)
+    online members = 3 (2 active, 1 suspended, 0 draining)
+    offline members = 1
+OK
+OK
+Cluster: #0
+    name = basic_network
+    address = ('127.0.0.1', 32324)
+    online members = 3 (1 active, 2 suspended, 0 draining)
+    offline members = 1
+OK
+OK
+Cluster: #0
+    name = basic_network
+    address = ('127.0.0.1', 32324)
+    online members = 2 (0 active, 2 suspended, 0 draining)
+    offline members = 1
+OK
+Online members of the cluster #0:
+    RTPproxy: #0
+        name = RTPPROXY1
+        address = ('127.0.0.1', 32323)
+        weight = 100
+        capacity = 2500
+        state = online
+        active sessions = 0
+        capacity utilization = 0.000000%
+        status = SUSPENDED
+
+    RTPproxy: #1
+        name = RTPPROXY2
+        address = ('[::1]', 32322)
+        weight = 100
+        capacity = 2500
+        state = online
+        active sessions = 0
+        capacity utilization = 0.000000%
+        status = SUSPENDED
+
+Offline members of the cluster #0:
+    RTPproxy: #0
+        name = RTPPROXY3
+        address = ('[::1]', 32323)
+        weight = 100
+        capacity = 2500
+        state = offline
+OK
+OK
+Cluster: #0
+    name = basic_network
+    address = ('127.0.0.1', 32324)
+    online members = 2 (0 active, 2 suspended, 0 draining)
+    offline members = 0
+OK
+Online members of the cluster #0:
+    RTPproxy: #0
+        name = RTPPROXY1
+        address = ('127.0.0.1', 32323)
+        weight = 100
+        capacity = 2500
+        state = online
+        active sessions = 0
+        capacity utilization = 0.000000%
+        status = SUSPENDED
+
+    RTPproxy: #1
+        name = RTPPROXY2
+        address = ('[::1]', 32322)
+        weight = 100
+        capacity = 2500
+        state = online
+        active sessions = 0
+        capacity utilization = 0.000000%
+        status = SUSPENDED
+
+Offline members of the cluster #0:
+
+OK
+Cluster: #0
+    name = basic_network
+    address = ('127.0.0.1', 32324)
+    online members = 1 (0 active, 1 suspended, 0 draining)
+    offline members = 1
+OK
+Online members of the cluster #0:
+    RTPproxy: #0
+        name = RTPPROXY2
+        address = ('[::1]', 32322)
+        weight = 100
+        capacity = 2500
+        state = online
+        active sessions = 0
+        capacity utilization = 0.000000%
+        status = SUSPENDED
+
+Offline members of the cluster #0:
+    RTPproxy: #0
+        name = RTPPROXY1
+        address = ('127.0.0.1', 32323)
+        weight = 100
+        capacity = 2500
+        state = offline
+OK
+Cluster: #0
+    name = basic_network
+    address = ('127.0.0.1', 32324)
+    online members = 1 (0 active, 1 suspended, 0 draining)
+    offline members = 1
+OK
+Online members of the cluster #0:
+    RTPproxy: #0
+        name = RTPPROXY1
+        address = ('127.0.0.1', 32323)
+        weight = 100
+        capacity = 2500
+        state = online
+        active sessions = 0
+        capacity utilization = 0.000000%
+        status = SUSPENDED
+
+Offline members of the cluster #0:
+    RTPproxy: #0
+        name = RTPPROXY2
+        address = ('[::1]', 32322)
+        weight = 100
+        capacity = 2500
+        state = offline
+OK
+Loaded 1 clusters and 4 RTP proxies
+OK
+Cluster: #0
+    name = basic_network
+    address = ('127.0.0.1', 32324)
+    online members = 2 (1 active, 1 suspended, 0 draining)
+    offline members = 2
+OK
+Online members of the cluster #0:
+    RTPproxy: #0
+        name = RTPPROXY1
+        address = ('127.0.0.1', 32323)
+        weight = 100
+        capacity = 2500
+        state = online
+        active sessions = 0
+        capacity utilization = 0.000000%
+        status = SUSPENDED
+
+    RTPproxy: #1
+        name = RTPPROXY3
+        address = ('[::1]', 32323)
+        weight = 100
+        capacity = 2500
+        state = online
+        active sessions = 0
+        capacity utilization = 0.000000%
+        status = ACTIVE
+
+Offline members of the cluster #0:
+    RTPproxy: #0
+        name = RTPPROXY2
+        address = ('[::1]', 32322)
+        weight = 100
+        capacity = 2500
+        state = offline
+
+    RTPproxy: #1
+        name = RTPPROXY0
+        address = /tmp/rtpp0.sock
+        weight = 100
+        capacity = 2500
+        state = offline
+OK

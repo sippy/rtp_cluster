@@ -1,0 +1,93 @@
+set -e
+
+TEST_MAX_DUR=60
+
+setup_rtpp() {
+   TEST_DUR=${1:-${TEST_MAX_DUR}}
+   sleep ${TEST_DUR}
+   echo "Gv nsess_created nsess_destroyed nsess_complete nsess_nortp nsess_owrtp nsess_nortcp nsess_owrtcp ncmds_rcvd ncmds_succd ncmds_errs ncmds_repld"
+}
+
+RTPPROXY="${RTPPROXY_CMD:-/usr/local/bin/rtpproxy_debug}"
+RTPP_DEBUG_LVL="dbug"
+RTPPROXY_ARGS="-T5 -f -b -s stdioc: -d ${RTPP_DEBUG_LVL}"
+RTPPROXY0_SOCK="-s cunix:/tmp/rtpp0.sock"
+RTPPROXY0_DUR="${TEST_MAX_DUR}"
+RTPPROXY1_SOCK="-s udp:127.0.0.1:32323"
+RTPPROXY1_DUR="30"
+RTPPROXY2_SOCK="-s udp6:::1:32322"
+RTPPROXY2_DUR="${TEST_MAX_DUR}"
+RTPPROXY3_SOCK="-s udp6:::1:32323"
+RTPPROXY3_DUR="30"
+
+start_rtpproxy() {
+  i=${1}
+  eval "RTPPROXY_SOCK=\${RTPPROXY${i}_SOCK}"
+  eval "RTPPROXY_DUR=\${RTPPROXY${i}_DUR}"
+  (setup_rtpp ${RTPPROXY_DUR} | \
+    ${RTPPROXY} -i ${RTPPROXY_SOCK} ${RTPPROXY_ARGS} -p rtpp${i}.pid \
+     -s cunix:_rtpp${i}.sock > rtpp${i}.rout 2>rtpp${i}.rlog) &
+  RTPP_PID=${!}
+  eval "RTPP${i}_PID=${RTPP_PID}"
+}
+
+for i in 0 1 2
+do
+  start_rtpproxy ${i}
+done
+sed 's|%%STATUS%%|ACTIVE|g' basic_network.xml.in > basic_network.xml
+python2 ../rtp_cluster.py -f -s rtpc.sock -c basic_network.xml &
+RTPC_PID=${!}
+
+sleep 2
+python2 ../rtp_cluster_client.py -s rtpc.sock ls > rtpcc.out
+sed 's|%%STATUS%%|SUSPENDED|g' basic_network.xml.in > basic_network.xml
+python2 ../rtp_cluster_client.py -s rtpc.sock reload >> rtpcc.out
+sleep 2
+python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+python2 ../rtp_cluster_client.py -s rtpc.sock modify basic_network pause RTPPROXY2 >> rtpcc.out
+sleep 2
+python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+python2 ../rtp_cluster_client.py -s rtpc.sock modify basic_network delete RTPPROXY0 >> rtpcc.out
+sleep 2
+python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+python2 ../rtp_cluster_client.py -s rtpc.sock modify basic_network delete RTPPROXY3 >> rtpcc.out
+sleep 2
+python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+
+sleep ${RTPPROXY1_DUR}
+
+python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+
+#python2 ../rtp_cluster_client.py -s _rtpp1.sock X
+
+wait ${RTPP1_PID}
+MAX_RECOVERY_DUR=$((60+10))
+RTPPROXY1_DUR="${MAX_RECOVERY_DUR}"
+start_rtpproxy 1
+RTPPROXY3_DUR=$((${RTPPROXY1_DUR} + 10))
+start_rtpproxy 3
+
+sleep ${MAX_RECOVERY_DUR}
+
+python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+
+python2 ../rtp_cluster_client.py -s rtpc.sock reload >> rtpcc.out
+sleep 2
+python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+
+for i in 0 1 2 3
+do
+  eval "RTPP_PID=\${RTPP${i}_PID}"
+  wait ${RTPP_PID}
+done
+
+kill -TERM ${RTPC_PID}
+wait ${RTPC_PID}
+
+grep -v 'average rtpc delay = ' rtpcc.out | diff rtpcc.output -

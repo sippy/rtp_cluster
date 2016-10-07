@@ -1,0 +1,46 @@
+<rtp_cluster_config>
+
+  <rtp_cluster>
+    <name>basic_network</name>
+    <protocol>UDP</protocol>
+    <address>127.0.0.1:32324</address>
+
+    <rtpproxy>
+      <name>RTPPROXY0</name>
+      <protocol>UNIX</protocol>
+      <address>/tmp/rtpp0.sock</address>
+      <weight>100</weight>
+      <capacity>2500</capacity>
+      <status>ACTIVE</status>
+    </rtpproxy>
+
+    <rtpproxy>
+      <name>RTPPROXY1</name>
+      <protocol>UDP</protocol>
+      <address>127.0.0.1:32323</address>
+      <weight>100</weight>
+      <capacity>2500</capacity>
+      <status>%%STATUS%%</status>
+    </rtpproxy>
+
+    <rtpproxy>
+      <name>RTPPROXY2</name>
+      <protocol>UDP6</protocol>
+      <address>localhost:32322</address>
+      <weight>100</weight>
+      <capacity>2500</capacity>
+      <status>ACTIVE</status>
+    </rtpproxy>
+
+    <rtpproxy>
+      <name>RTPPROXY3</name>
+      <protocol>UDP6</protocol>
+      <address>[::1]:32323</address>
+      <weight>100</weight>
+      <capacity>2500</capacity>
+      <status>ACTIVE</status>
+    </rtpproxy>
+
+  </rtp_cluster>
+
+</rtp_cluster_config>
