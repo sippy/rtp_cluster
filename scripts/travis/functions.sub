@@ -1,0 +1,7 @@
+BUILDDIR="${BUILDDIR:-${BASEDIR}}"
+
+DISTDIR="${BUILDDIR}/dist"
+TESTSDIR="${BASEDIR}/tests"
+
+RTPPDDIR="${DISTDIR}/rtpproxy"
+RTPPROXY_BIN="${RTPPDDIR}/src/rtpproxy_debug"

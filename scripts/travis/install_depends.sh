@@ -5,16 +5,14 @@ set -e
 BASEDIR="${BASEDIR:-$(dirname -- "${0}")/../..}"
 BASEDIR="$(readlink -f -- ${BASEDIR})"
 
-BUILDDIR="${BUILDDIR:-${BASEDIR}}"
+. ${BASEDIR}/scripts/travis/functions.sub
 
-#. ${BASEDIR}/functions
-
-if [ -e "${BUILDDIR}/dist" ]
+if [ -e "${DISTDIR}" ]
 then
-  rm -rf "${BUILDDIR}/dist"
+  rm -rf "${DISTDIR}"
 fi
-mkdir "${BUILDDIR}/dist"
-cd "${BUILDDIR}/dist"
+mkdir "${DISTDIR}"
+cd "${DISTDIR}"
 
 RTPP_BRANCH="master"
 MAKE_CMD="make"
