@@ -2,8 +2,10 @@
 
 set -e
 
-BASEDIR="${BASEDIR:-$(dirname -- "${0}")/..}"
+BASEDIR="${BASEDIR:-$(dirname -- "${0}")/../..}"
 BASEDIR="$(readlink -f -- ${BASEDIR})"
+
+BUILDDIR="${BUILDDIR:-${BASEDIR}}"
 
 #. ${BASEDIR}/functions
 
