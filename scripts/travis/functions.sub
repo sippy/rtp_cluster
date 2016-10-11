@@ -5,3 +5,15 @@ TESTSDIR="${BASEDIR}/tests"
 
 RTPPDDIR="${DISTDIR}/rtpproxy"
 RTPPROXY_BIN="${RTPPDDIR}/src/rtpproxy_debug"
+
+init_mr_time() {
+  MR_TIME="`python ${RTPPDDIR}/python/getmonotime.py -S ${RTPPDDIR}/python/sippy_lite -r`"
+  SIPLOG_TSTART="`echo ${MR_TIME} | awk '{print $2}'`"
+  export SIPLOG_TSTART
+  SIPLOG_TFORM="rel"
+  export SIPLOG_TFORM
+  RTPP_LOG_TSTART="`echo ${MR_TIME} | awk '{print $1}'`"
+  export RTPP_LOG_TSTART
+  RTPP_LOG_TFORM="rel"
+  export RTPP_LOG_TFORM
+}

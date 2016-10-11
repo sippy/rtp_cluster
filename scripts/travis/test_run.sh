@@ -8,4 +8,5 @@ BASEDIR="$(readlink -f -- ${BASEDIR})"
 . ${BASEDIR}/scripts/travis/functions.sub
 
 cd ${TESTSDIR}
+init_mr_time
 RTPPROXY_CMD="${RTPPROXY_BIN}" exec ${SHELL} -x basic_network
