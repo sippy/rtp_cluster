@@ -21,6 +21,7 @@ RTPPROXY3_SOCK="-s udp6:::1:32323"
 RTPPROXY3_DUR="30"
 
 start_rtpproxy() {
+  echo "Starting RTPProxy #${i}" >&2
   i=${1}
   eval "RTPPROXY_SOCK=\${RTPPROXY${i}_SOCK}"
   eval "RTPPROXY_DUR=\${RTPPROXY${i}_DUR}"
@@ -29,6 +30,13 @@ start_rtpproxy() {
      -s cunix:_rtpp${i}.sock > rtpp${i}.rout 2>rtpp${i}.rlog) &
   RTPP_PID=${!}
   eval "RTPP${i}_PID=${RTPP_PID}"
+  echo "RTPProxy #${i} has ended" >&2
+}
+
+mark_tp() {
+  TP=${TP:-0}
+  TP=$((${TP} + 1))
+  echo "----- TP${TP}: ${1} -----" >> rtpcc.out
 }
 
 for i in 0 1 2
@@ -42,22 +50,32 @@ RTPC_PID=${!}
 sleep 2
 python2 ../rtp_cluster_client.py -s rtpc.sock ls > rtpcc.out
 sed 's|%%STATUS%%|SUSPENDED|g' basic_network.xml.in > basic_network.xml
+
+mark_tp "Testing: reload command:"
 python2 ../rtp_cluster_client.py -s rtpc.sock reload >> rtpcc.out
 sleep 2
+mark_tp "Testing after suspending one:"
 python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
 python2 ../rtp_cluster_client.py -s rtpc.sock modify basic_network pause RTPPROXY2 >> rtpcc.out
 sleep 2
+mark_tp "Testing after pausing RTPPROXY2:"
 python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+mark_tp "Testing: delete command:"
 python2 ../rtp_cluster_client.py -s rtpc.sock modify basic_network delete RTPPROXY0 >> rtpcc.out
 sleep 2
+mark_tp "Testing after deleting RTPPROXY0:"
 python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
 python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+mark_tp "Testing: delete command:"
 python2 ../rtp_cluster_client.py -s rtpc.sock modify basic_network delete RTPPROXY3 >> rtpcc.out
 sleep 2
+mark_tp "Testing after deleting RTPPROXY3:"
 python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
 python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
 
 sleep ${RTPPROXY1_DUR}
+
+mark_tp "Testing: RTPproxy \"RTPPROXY1\" has changed status...:"
 
 python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
 python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
@@ -73,8 +91,12 @@ start_rtpproxy 3
 
 sleep ${MAX_RECOVERY_DUR}
 
+mark_tp "Testing: RTPproxy \"RTPPROXY2\", \"RTPPROXY1\" has changed status...:"
+
 python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
 python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+
+mark_tp "Testing: reload command:"
 
 python2 ../rtp_cluster_client.py -s rtpc.sock reload >> rtpcc.out
 sleep 2
