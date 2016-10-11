@@ -9,4 +9,4 @@ BASEDIR="$(readlink -f -- ${BASEDIR})"
 
 cd ${TESTSDIR}
 init_mr_time
-RTPPROXY_CMD="${RTPPROXY_BIN}" exec ${SHELL} -x basic_network
+RTPPROXY_CMD="${RTPPROXY_BIN}" exec ${SHELL} basic_network
