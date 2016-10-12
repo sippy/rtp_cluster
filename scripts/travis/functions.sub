@@ -4,7 +4,12 @@ DISTDIR="${BUILDDIR}/dist"
 TESTSDIR="${BASEDIR}/tests"
 
 RTPPDDIR="${DISTDIR}/rtpproxy"
-RTPPROXY_BIN="${RTPPDDIR}/src/rtpproxy_debug"
+if [ "${RTPP_TEST_VER}" = "production" ]
+then
+  RTPPROXY_BIN="${RTPPDDIR}/src/rtpproxy"
+else
+  RTPPROXY_BIN="${RTPPDDIR}/src/rtpproxy_debug"
+fi
 
 init_mr_time() {
   MR_TIME="`python ${RTPPDDIR}/python/getmonotime.py -S ${RTPPDDIR}/python/sippy_lite -r`"

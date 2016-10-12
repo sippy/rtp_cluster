@@ -6,3 +6,6 @@ before_install:
   - sh -x ./scripts/travis/install_depends.sh
 script:
     sh -x ./scripts/travis/test_run.sh
+env:
+  - RTPP_TEST_VER=production
+  - RTPP_TEST_VER=debug
