@@ -1,3 +1,5 @@
+[![Test Status](https://travis-ci.org/sippy/rtp_cluster.svg?branch=master)](https://travis-ci.org/sippy/rtp_cluster)
+
 # RTP Cluster - a front-end for the distributed RTPproxy network
 
 ## Overview 
