@@ -120,5 +120,5 @@ kill -TERM ${RTPC_PID}
 wait ${RTPC_PID}
 write_siplog "Rtp Cluster has ended"
 
-grep -v 'average rtpc delay = ' rtpcc.out | diff rtpcc.output -
+grep -v 'average rtpc delay = ' rtpcc.out | diff -U10 rtpcc.output -
 write_siplog "All done"
