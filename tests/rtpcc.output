@@ -4,27 +4,28 @@ Cluster: #0
     online members = 3 (3 active, 0 suspended, 0 draining)
     offline members = 1
 OK
------ TP1: Testing: reload command: -----
+----- [TP1: Testing: reload command] -----
 Loaded 1 clusters and 4 RTP proxies
 OK
------ TP2: Testing after suspending one: -----
+----- [TP2: Testing after suspending one] -----
 Cluster: #0
     name = basic_network
     address = ('127.0.0.1', 32324)
     online members = 3 (2 active, 1 suspended, 0 draining)
     offline members = 1
 OK
+----- [TP3: Testing: pause command] -----
 OK
------ TP3: Testing after pausing RTPPROXY2: -----
+----- [TP4: Testing after pausing RTPPROXY2] -----
 Cluster: #0
     name = basic_network
     address = ('127.0.0.1', 32324)
     online members = 3 (1 active, 2 suspended, 0 draining)
     offline members = 1
 OK
------ TP4: Testing: delete command: -----
+----- [TP5: Testing: delete command] -----
 OK
------ TP5: Testing after deleting RTPPROXY0: -----
+----- [TP6: Testing after deleting RTPPROXY0] -----
 Cluster: #0
     name = basic_network
     address = ('127.0.0.1', 32324)
@@ -60,9 +61,9 @@ Offline members of the cluster #0:
         capacity = 2500
         state = offline
 OK
------ TP6: Testing: delete command: -----
+----- [TP7: Testing: delete command] -----
 OK
------ TP7: Testing after deleting RTPPROXY3: -----
+----- [TP8: Testing after deleting RTPPROXY3] -----
 Cluster: #0
     name = basic_network
     address = ('127.0.0.1', 32324)
@@ -93,7 +94,7 @@ Online members of the cluster #0:
 Offline members of the cluster #0:
 
 OK
------ TP8: Testing: RTPproxy "RTPPROXY1" has changed status...: -----
+----- [TP9: Testing: RTPproxy "RTPPROXY1" has changed status...] -----
 Cluster: #0
     name = basic_network
     address = ('127.0.0.1', 32324)
@@ -119,7 +120,7 @@ Offline members of the cluster #0:
         capacity = 2500
         state = offline
 OK
------ TP9: Testing: RTPproxy "RTPPROXY2", "RTPPROXY1" has changed status...: -----
+----- [TP10: Testing: RTPproxy "RTPPROXY2", "RTPPROXY1" has changed status...] -----
 Cluster: #0
     name = basic_network
     address = ('127.0.0.1', 32324)
@@ -145,7 +146,7 @@ Offline members of the cluster #0:
         capacity = 2500
         state = offline
 OK
------ TP10: Testing: reload command: -----
+----- [TP11: Testing: reload command] -----
 Loaded 1 clusters and 4 RTP proxies
 OK
 Cluster: #0
