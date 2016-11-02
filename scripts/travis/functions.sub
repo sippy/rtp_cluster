@@ -10,9 +10,15 @@ then
 else
   RTPPROXY_BIN="${RTPPDDIR}/src/rtpproxy_debug"
 fi
+if [ "${RTPP_BRANCH}" != "master" ]
+then
+  RTPPDDIR_m="${RTPPDDIR}.master"
+else
+  RTPPDDIR_m="${RTPPDDIR}"
+fi
 
 init_mr_time() {
-  MR_TIME="`python ${RTPPDDIR}/python/getmonotime.py -S ${RTPPDDIR}/python/sippy_lite -r`"
+  MR_TIME="`python ${RTPPDDIR_m}/python/getmonotime.py -S ${RTPPDDIR_m}/python/sippy_lite -r`"
   SIPLOG_TSTART="`echo ${MR_TIME} | awk '{print $2}'`"
   export SIPLOG_TSTART
   SIPLOG_TFORM="rel"
