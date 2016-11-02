@@ -7,5 +7,9 @@ before_install:
 script:
     sh -x ./scripts/travis/test_run.sh
 env:
-  - RTPP_TEST_VER=production
-  - RTPP_TEST_VER=debug
+  - RTPP_TEST_VER=production RTPP_BRANCH=master
+  - RTPP_TEST_VER=debug RTPP_BRANCH=master
+  - RTPP_TEST_VER=production RTPP_BRANCH=rtpp_2_1
+  - RTPP_TEST_VER=debug RTPP_BRANCH=rtpp_2_1
+  - RTPP_TEST_VER=production RTPP_BRANCH=rtpp_2_0
+  - RTPP_TEST_VER=debug RTPP_BRANCH=rtpp_2_0
