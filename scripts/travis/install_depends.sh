@@ -14,7 +14,7 @@ fi
 mkdir "${DISTDIR}"
 cd "${DISTDIR}"
 
-RTPP_BRANCH="master"
+RTPP_BRANCH=${RTPP_BRANCH:-"master"}
 MAKE_CMD="make"
 git clone -b "${RTPP_BRANCH}" --recursive git://github.com/sippy/rtpproxy.git
 cd rtpproxy
