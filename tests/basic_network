@@ -90,6 +90,11 @@ python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
 
 #python2 ../rtp_cluster_client.py -s _rtpp1.sock X
 
+if [ "${RTPP_BRANCH}" = "rtpp_2_0" ]
+then
+  write_siplog "Nudging ${RTPP1_PID} with SIGHUP"
+  kill -HUP ${RTPP1_PID}
+fi
 wait ${RTPP1_PID}
 write_siplog "RTPProxy #1 has ended"
 MAX_RECOVERY_DUR=$((60+10))
@@ -115,6 +120,11 @@ python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
 for i in 0 1 2 3
 do
   eval "RTPP_PID=\${RTPP${i}_PID}"
+  if [ "${RTPP_BRANCH}" = "rtpp_2_0" ]
+  then
+    write_siplog "Nudging ${RTPP_PID} with SIGHUP"
+    kill -HUP ${RTPP_PID}
+  fi
   wait ${RTPP_PID}
   write_siplog "RTPProxy #${i} has ended"
 done
