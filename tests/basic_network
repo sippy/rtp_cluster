@@ -14,9 +14,16 @@ setup_rtpp() {
   write_siplog "Finishing RTPProxy #${2}"
 }
 
+if [ "${RTPP_BRANCH}" = "rtpp_2_0" ]
+then
+  STDIO_CH="stdio:"
+else
+  STDIO_CH="stdioc:"
+fi
+
 RTPPROXY="${RTPPROXY_CMD:-/usr/local/bin/rtpproxy_debug}"
 RTPP_DEBUG_LVL="dbug"
-RTPPROXY_ARGS="-T5 -f -b -s stdioc: -d ${RTPP_DEBUG_LVL}"
+RTPPROXY_ARGS="-T5 -f -b -s ${STDIO_CH} -d ${RTPP_DEBUG_LVL}"
 RTPPROXY0_SOCK="-s cunix:/tmp/rtpp0.sock"
 RTPPROXY0_DUR="${TEST_MAX_DUR}"
 RTPPROXY1_SOCK="-s udp:127.0.0.1:32323"
