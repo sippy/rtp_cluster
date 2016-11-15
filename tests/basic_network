@@ -99,8 +99,9 @@ python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
 
 if [ "${RTPP_BRANCH}" = "rtpp_2_0" ]
 then
-  write_siplog "Nudging ${RTPP1_PID} with SIGHUP"
-  kill -HUP ${RTPP1_PID}
+  R_PID=`cat rtpp1.pid`
+  write_siplog "Nudging ${R_PID} with SIGHUP"
+  kill -HUP ${R_PID}
 fi
 wait ${RTPP1_PID}
 write_siplog "RTPProxy #1 has ended"
@@ -129,8 +130,9 @@ do
   eval "RTPP_PID=\${RTPP${i}_PID}"
   if [ "${RTPP_BRANCH}" = "rtpp_2_0" ]
   then
-    write_siplog "Nudging ${RTPP_PID} with SIGHUP"
-    kill -HUP ${RTPP_PID}
+    R_PID=`cat rtpp${i}.pid`
+    write_siplog "Nudging ${R_PID} with SIGHUP"
+    kill -HUP ${R_PID}
   fi
   wait ${RTPP_PID}
   write_siplog "RTPProxy #${i} has ended"
