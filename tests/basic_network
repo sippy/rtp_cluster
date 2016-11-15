@@ -10,7 +10,7 @@ write_siplog() {
 setup_rtpp() {
   TEST_DUR=${1:-${TEST_MAX_DUR}}
   sleep ${TEST_DUR}
-  echo "Gv nsess_created nsess_destroyed nsess_complete nsess_nortp nsess_owrtp nsess_nortcp nsess_owrtcp ncmds_rcvd ncmds_succd ncmds_errs ncmds_repld"
+  cat input/get_stats
   write_siplog "Finishing RTPProxy #${2}"
 }
 
@@ -35,14 +35,16 @@ RTPPROXY3_DUR="30"
 
 start_rtpproxy() {
   _i=${1}
+  _j=${_j:-0}
   write_siplog "Starting RTPProxy #${_i}"
   eval "RTPPROXY_SOCK=\${RTPPROXY${_i}_SOCK}"
   eval "RTPPROXY_DUR=\${RTPPROXY${_i}_DUR}"
   (setup_rtpp ${RTPPROXY_DUR} ${_i} | \
     ${RTPPROXY} -i ${RTPPROXY_SOCK} ${RTPPROXY_ARGS} -p rtpp${_i}.pid \
-     -s cunix:_rtpp${_i}.sock > rtpp${_i}.rout 2>rtpp${_i}.rlog) &
+     -s cunix:_rtpp${_i}.sock > rtpp${_j}.rout 2>rtpp${_j}.rlog) &
   RTPP_PID=${!}
   eval "RTPP${_i}_PID=${RTPP_PID}"
+  _j=$((${_j} + 1))
 }
 
 mark_tp() {
@@ -63,6 +65,17 @@ RTPC_PID=${!}
 
 sleep 2
 python2 ../rtp_cluster_client.py -s rtpc.sock ls > rtpcc.out
+
+mark_tp "Testing: creating some sessions"
+python2 ../sippy_lite/tools/rtpp_query.py -S ../sippy_lite \
+ -i input/session_create -s udp:127.0.0.1:32324 > session_create.qout
+mark_tp "Testing: getting stats"
+python2 ../sippy_lite/tools/rtpp_query.py -S ../sippy_lite \
+ -i input/get_stats -s udp:127.0.0.1:32324 > get_stats.qout
+mark_tp "Testing: deleting sessions"
+python2 ../sippy_lite/tools/rtpp_query.py -S ../sippy_lite \
+ -i input/session_delete -s udp:127.0.0.1:32324 >> session_create.qout
+
 sed 's|%%STATUS%%|SUSPENDED|g' basic_network.xml.in > basic_network.xml
 
 mark_tp "Testing: reload command"
@@ -146,5 +159,6 @@ kill -TERM ${RTPC_PID}
 wait ${RTPC_PID}
 write_siplog "Rtp Cluster has ended"
 
-grep -v 'average rtpc delay = ' rtpcc.out | diff -U10 rtpcc.output -
+grep -v 'average rtpc delay = ' rtpcc.out | diff -U10 output/rtpcc -
+diff -U10 output/session_create session_create.qout
 write_siplog "All done"

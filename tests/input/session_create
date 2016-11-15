@@ -1,0 +1,8 @@
+UR5.20.3.9c121,114,0,101A call_id1 10.6.23.12 22474 from_tag1
+LR10.62.236.122c121,101 call_id1 6.5.25.2 4000 from_tag1 to_tag1
+UR5.20.3.9c121,114,0,101A call_id2 10.6.23.12 22476 from_tag2
+LR10.62.236.122c121,101 call_id2 6.5.25.2 4002 from_tag2 to_tag2
+UR5.20.3.9c121,114,0,101A call_id3 10.6.23.12 22478 from_tag3
+LR10.62.236.122c121,101 call_id3 6.5.25.2 4004 from_tag3 to_tag3
+UR5.20.3.9c121,114,0,101A call_id4 10.6.23.12 22480 from_tag4
+LR10.62.236.122c121,101 call_id4 6.5.25.2 4006 from_tag4 to_tag4

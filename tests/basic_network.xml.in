@@ -12,6 +12,8 @@
       <weight>100</weight>
       <capacity>2500</capacity>
       <status>ACTIVE</status>
+      <wan_address>1.2.3.4</wan_address>
+      <lan_address>127.0.0.1</lan_address>
     </rtpproxy>
 
     <rtpproxy>
@@ -21,6 +23,8 @@
       <weight>100</weight>
       <capacity>2500</capacity>
       <status>%%STATUS%%</status>
+      <wan_address>1.2.3.4</wan_address>
+      <lan_address>127.0.0.1</lan_address>
     </rtpproxy>
 
     <rtpproxy>
@@ -30,6 +34,8 @@
       <weight>100</weight>
       <capacity>2500</capacity>
       <status>ACTIVE</status>
+      <wan_address>1.2.3.4</wan_address>
+      <lan_address>127.0.0.1</lan_address>
     </rtpproxy>
 
     <rtpproxy>
