@@ -59,7 +59,7 @@ class TimeoutAbsMono:
 
 if __name__ == '__main__':
     from twisted.internet import reactor
-    from sippy_lite.Time.MonoTime import MonoTime
+    from MonoTime import MonoTime
     
     def test1(arguments, testnum, mtm):
         arguments['delay'] = mtm.offsetFromNow()

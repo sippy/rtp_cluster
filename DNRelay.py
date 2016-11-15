@@ -30,7 +30,7 @@ import socket, select
 import sys
 sys.path.append('..')
 
-from sippy_lite.Cli_server_tcp import Cli_server_tcp
+from sippy_lite.sippy.Cli_server_tcp import Cli_server_tcp
 
 _MAX_RECURSE = 10
 

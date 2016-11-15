@@ -4,7 +4,7 @@ TEST_MAX_DUR=60
 
 write_siplog() {
   APPNAME=`basename "${0}"`
-  python2 ../sippy_lite/SipLogger.py "${APPNAME}" "${1}"
+  python2 ../sippy_lite/sippy/SipLogger.py "${APPNAME}" "${1}"
 }
 
 setup_rtpp() {
@@ -67,13 +67,13 @@ sleep 2
 python2 ../rtp_cluster_client.py -s rtpc.sock ls > rtpcc.out
 
 mark_tp "Testing: creating some sessions"
-python2 ../sippy_lite/tools/rtpp_query.py -S ../sippy_lite \
+python2 ../sippy_lite/sippy/tools/rtpp_query.py -S ../sippy_lite \
  -i input/session_create -s udp:127.0.0.1:32324 > session_create.qout
 mark_tp "Testing: getting stats"
-python2 ../sippy_lite/tools/rtpp_query.py -S ../sippy_lite \
+python2 ../sippy_lite/sippy/tools/rtpp_query.py -S ../sippy_lite \
  -i input/get_stats -s udp:127.0.0.1:32324 > get_stats.qout
 mark_tp "Testing: deleting sessions"
-python2 ../sippy_lite/tools/rtpp_query.py -S ../sippy_lite \
+python2 ../sippy_lite/sippy/tools/rtpp_query.py -S ../sippy_lite \
  -i input/session_delete -s udp:127.0.0.1:32324 >> session_create.qout
 
 sed 's|%%STATUS%%|SUSPENDED|g' basic_network.xml.in > basic_network.xml

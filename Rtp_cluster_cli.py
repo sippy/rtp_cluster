@@ -33,7 +33,7 @@ from socket import AF_INET, AF_INET6, AF_UNIX
 from contrib.objgraph import typestats
 import operator
 
-from sippy_lite.Cli_server_local import Cli_server_local
+from sippy_lite.sippy.Cli_server_local import Cli_server_local
 
 class Rtp_cluster_cli(object):
     ccm = None

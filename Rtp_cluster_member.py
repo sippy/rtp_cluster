@@ -26,8 +26,8 @@
 import sys
 sys.path.append('..')
 
-from sippy_lite.Rtp_proxy_client import Rtp_proxy_client
-from sippy_lite.Timeout import TimeoutInact
+from sippy_lite.sippy.Rtp_proxy_client import Rtp_proxy_client
+from sippy_lite.sippy.Timeout import TimeoutInact
 
 class rc_filter(object):
     a = None

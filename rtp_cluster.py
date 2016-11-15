@@ -38,10 +38,10 @@ from socket import AF_INET, AF_INET6, AF_UNIX
 
 from twisted.internet import reactor
 
-from sippy_lite.SipConf import MyAddress
-from sippy_lite.Signal import LogSignal
-from sippy_lite.SipLogger import SipLogger
-from sippy_lite.misc import daemonize
+from sippy_lite.sippy.SipConf import MyAddress
+from sippy_lite.sippy.Signal import LogSignal
+from sippy_lite.sippy.SipLogger import SipLogger
+from sippy_lite.sippy.misc import daemonize
 
 from Rtp_cluster_cli import Rtp_cluster_cli
 
