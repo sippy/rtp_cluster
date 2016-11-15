@@ -188,13 +188,13 @@ class Rtp_proxy_client(Rtp_proxy_client_udp, Rtp_proxy_client_stream):
             to.spread_runs(0.1)
             to.go()
 
-    def heartbeat(self):
+    def heartbeat(self, re_arm = True):
         #print 'heartbeat', self, self.address
         if self.shut_down:
             return
-        self.send_command('Ib', self.heartbeat_reply)
+        self.send_command('Ib', self.heartbeat_reply, re_arm)
 
-    def heartbeat_reply(self, stats):
+    def heartbeat_reply(self, stats, re_arm):
         #print 'heartbeat_reply', self.address, stats, self.online
         if self.shut_down:
             return
@@ -218,6 +218,8 @@ class Rtp_proxy_client(Rtp_proxy_client_udp, Rtp_proxy_client_stream):
                 elif line_parts[0] == 'packets transmitted':
                     ptransmitted = int(line_parts[1])
                 self.update_active(active_sessions, sessions_created, active_streams, preceived, ptransmitted)
+        if not re_arm:
+            return
         to = TimeoutInact(self.heartbeat, self.hrtb_ival)
         to.spread_runs(0.1)
         to.go()
