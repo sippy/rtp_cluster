@@ -222,6 +222,7 @@ class Rtp_cluster(object):
                     if cmd.type in ('U', 'L') and rtpp.lan_address != None:
                         out_cmd = Rtp_proxy_cmd(orig_cmd)
                         out_cmd.ul_opts.local_ip = rtpp.lan_address
+                        out_cmd.ul_opts.destination_ip = None
                         out_cmd = str(out_cmd)
                     else:
                         out_cmd = orig_cmd
@@ -263,6 +264,7 @@ class Rtp_cluster(object):
         if cmd.type in ('U', 'L') and rtpp.lan_address != None:
             out_cmd = Rtp_proxy_cmd(orig_cmd)
             out_cmd.ul_opts.local_ip = rtpp.lan_address
+            out_cmd.ul_opts.destination_ip = None
             out_cmd = str(out_cmd)
         else:
             out_cmd = orig_cmd
