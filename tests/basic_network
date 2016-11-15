@@ -130,6 +130,10 @@ do
   eval "RTPP_PID=\${RTPP${i}_PID}"
   if [ "${RTPP_BRANCH}" = "rtpp_2_0" ]
   then
+    if [ ! -e rtpp${i}.pid ]
+    then
+      continue
+    fi
     R_PID=`cat rtpp${i}.pid`
     write_siplog "Nudging ${R_PID} with SIGHUP"
     kill -HUP ${R_PID}
