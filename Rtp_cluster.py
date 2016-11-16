@@ -392,7 +392,6 @@ class Rtp_cluster(object):
                 return
             rtpp.status = 'DRAINING'
             rtpp.on_active_update = self.rtpp_active_change
-            rtpp.heartbeat(False)
             return
         self.pending.remove(rtpp)
         rtpp.shutdown()
