@@ -383,10 +383,11 @@ class Rtp_cluster(object):
             self.pending.append(rtpp)
 
     def bring_down(self, rtpp):
+        #print 'bring_down', self, rtpp
         if not rtpp.is_local and self.dnrelay != None:
             self.dnrelay.disallow_from(rtpp.address)
         if rtpp in self.active:
-            if rtpp.active_sessions in (0, None):
+            if len(rtpp.call_id_map) == 0 or rtpp.active_sessions in (0, None):
                 self.active.remove(rtpp)
                 rtpp.shutdown()
                 return
@@ -397,7 +398,7 @@ class Rtp_cluster(object):
         rtpp.shutdown()
 
     def rtpp_active_change(self, rtpp, active_sessions):
-        if rtpp.status == 'DRAINING' and active_sessions == 0:
+        if rtpp.status == 'DRAINING' and (len(rtpp.call_id_map) == 0 or active_sessions == 0):
             if rtpp in self.pending:
                 self.pending.remove(rtpp)
             else:
