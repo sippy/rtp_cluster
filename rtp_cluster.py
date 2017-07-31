@@ -195,12 +195,12 @@ class ClusterCLI(object):
                 clim.send('OK\n')
                 return False
         if cmd in ('h', 'help'):
-                clim.send('Supported commands:\n' \
-                  '\tls [CLUSTER_NAME]\n' \
-                  '\tmodify CLUSTER_NAME [add|remove|delete|pause|resume] ARGS\n' \
-                  '\treload\n' \
-                  '\tquit\n')
-                return False
+            clim.send('Supported commands:\n' \
+            '\tls [CLUSTER_NAME]\n' \
+            '\tmodify CLUSTER_NAME [add|remove|delete|pause|resume] ARGS\n' \
+            '\treload\n' \
+            '\tquit\n')
+            return False
         if cmd in ('q', 'quit', 'exit'):
             clim.close()
             return False
