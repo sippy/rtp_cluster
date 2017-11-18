@@ -175,6 +175,7 @@ class Rtp_cluster_cli(object):
                     rtpp.lan_address = rtpp_config['lan_address']
                 rtpp.weight = int(rtpp_config['weight'])
                 rtpp.capacity = int(rtpp_config['capacity'])
+                rtpp.status = rtpp_config['status']
                 rtp_cluster.add_member(rtpp)
                 clim.send('OK\n')
                 return False
@@ -243,6 +244,7 @@ class Rtp_cluster_cli(object):
                           address, bind_address, family = family)
                         rtpp.weight = rtpp_config['weight']
                         rtpp.capacity = rtpp_config['capacity']
+                        rtpp.status = rtpp_config['status']
                         if rtpp_config.has_key('wan_address'):
                             rtpp.wan_address = rtpp_config['wan_address']
                         if rtpp_config.has_key('lan_address'):
@@ -257,6 +259,7 @@ class Rtp_cluster_cli(object):
                         rtpp.reconnect(address)
                         rtpp.weight = rtpp_config['weight']
                         rtpp.capacity = rtpp_config['capacity']
+                        rtpp.status = rtpp_config['status']
                         if rtpp_config.has_key('wan_address'):
                             rtpp.wan_address = rtpp_config['wan_address']
                         else:

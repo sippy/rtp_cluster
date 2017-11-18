@@ -178,6 +178,7 @@ if __name__ == '__main__':
             rtpp = Rtp_cluster_member(rtpp_config['name'], global_config, address, bind_address, family = family)
             rtpp.weight = rtpp_config['weight']
             rtpp.capacity = rtpp_config['capacity']
+            rtpp.status = rtpp_config['status']
             if rtpp_config.has_key('wan_address'):
                 rtpp.wan_address = rtpp_config['wan_address']
             if rtpp_config.has_key('lan_address'):

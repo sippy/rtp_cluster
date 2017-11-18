@@ -145,9 +145,9 @@ class ValidateHandler(ContentHandler):
                 if self.rtpproxy['capacity'] <= 0:
                     raise Exception("rtpproxy capacity should > 0: %s" % (content))
             elif self.element == 'status':
-                self.rtpproxy['status'] = content.lower()
-                if self.rtpproxy['status'] != 'suspended' and self.rtpproxy['status'] != 'active':
-                    raise Exception("rtpproxy status should be either 'suspended' or 'active'")
+                self.rtpproxy['status'] = content.upper()
+                if self.rtpproxy['status'] != 'SUSPENDED' and self.rtpproxy['status'] != 'ACTIVE':
+                    raise Exception("rtpproxy status should be either 'SUSPENDED' or 'ACTIVE'")
 
         if self.ctx[-1] == 'dnconfig':
             if self.element == 'inbound_address':
