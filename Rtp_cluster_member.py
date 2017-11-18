@@ -117,7 +117,7 @@ class Rtp_cluster_member(Rtp_proxy_client):
         if online_pre or not self.online:
             return
         self.global_config['_sip_logger'].write('RTPproxy "%s" has changed ' \
-          'status from offline to online' % self.name)
+          'state from offline to online' % self.name)
         if self.on_state_change != None:
             self.on_state_change(self, True)
         #print 'exit go_online', self, self.online
@@ -126,7 +126,7 @@ class Rtp_cluster_member(Rtp_proxy_client):
         #print 'go_offline', self
         if self.online:
             self.global_config['_sip_logger'].write('RTPproxy "%s" has changed ' \
-              'status from online to offline' % self.name)
+              'state from online to offline' % self.name)
             self.stats_cache = {}
             if self.on_state_change != None:
                 self.on_state_change(self, False)
