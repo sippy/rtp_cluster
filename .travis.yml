@@ -4,8 +4,8 @@ language: python
 python:
   - "2.7"
   - "3.6"
-virtualenv:
-  system_site_packages: true
+#virtualenv:
+#  system_site_packages: true
 before_install:
   - sh -x ./scripts/travis/hack_travis_ipv6.sh
   - sh -x ./scripts/travis/install_depends.sh
