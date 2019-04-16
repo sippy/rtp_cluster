@@ -23,11 +23,8 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import sys
-sys.path.append('..')
-
-from sippy_lite.sippy.Rtp_proxy_client import Rtp_proxy_client
-from sippy_lite.sippy.Timeout import TimeoutInact
+from sippy.Rtp_proxy_client import Rtp_proxy_client
+from sippy.Time.Timeout import TimeoutInact
 
 class rc_filter(object):
     a = None

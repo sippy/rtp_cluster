@@ -27,10 +27,7 @@ from threading import Thread, Condition
 from errno import EINTR, EPIPE, ENOTCONN, ECONNRESET
 import socket, select
 
-import sys
-sys.path.append('..')
-
-from sippy_lite.sippy.Cli_server_tcp import Cli_server_tcp
+from sippy.CLIManager import CLIConnectionManager
 
 _MAX_RECURSE = 10
 
@@ -70,7 +67,7 @@ class _DNRLWorker(Thread):
             try:
                 self.s.send(dnstring)
                 break
-            except socket.error, why:
+            except socket.error as why:
                 if why[0] == EINTR:
                     continue
                 elif why[0] in (EPIPE, ENOTCONN, ECONNRESET):
@@ -97,7 +94,7 @@ class _DNRLWorker(Thread):
                 break
             try:
                 self.deliver_dnotify(wi)
-            except Exception, e:
+            except Exception as e:
                 self.sip_logger.write(' cannot deliver notification "%s" to the "%s": %s' % \
                   (wi, self.spath, str(e)))
             else:
@@ -120,7 +117,7 @@ class DNRelay(object):
 
     def __init__(self, dnconfig, sip_logger):
         self.workers = {}
-        self.clim = Cli_server_tcp(self.recv_dnotify, dnconfig.in_address)
+        self.clim = CLIConnectionManager(self.recv_dnotify, dnconfig.in_address, tcp = True)
         self.clim.accept_list = []
         self.dest_sprefix = dnconfig.dest_sprefix
         self.in_address = dnconfig.in_address

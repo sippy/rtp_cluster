@@ -25,6 +25,10 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import sys
+
+sys.path.insert(0, './sippy_lite')
+
 from Rtp_cluster_config import read_cluster_config
 from Rtp_cluster import Rtp_cluster
 from Rtp_cluster_member import Rtp_cluster_member
@@ -36,12 +40,11 @@ from pwd import getpwnam
 from grp import getgrnam
 from socket import AF_INET, AF_INET6, AF_UNIX
 
-from twisted.internet import reactor
-
-from sippy_lite.sippy.SipConf import MyAddress
-from sippy_lite.sippy.Signal import LogSignal
-from sippy_lite.sippy.SipLogger import SipLogger
-from sippy_lite.sippy.misc import daemonize
+from sippy.SipConf import MyAddress
+from sippy.Signal import LogSignal
+from sippy.SipLogger import SipLogger
+from sippy.misc import daemonize
+from sippy.Core.EventDispatcher import ED2
 
 from Rtp_cluster_cli import Rtp_cluster_cli
 
@@ -59,10 +62,10 @@ def usage():
 def debug_signal(signum, frame):
     import sys, traceback
     for thread_id, stack in sys._current_frames().iteritems():
-        print 'Thread id: %s\n%s' % (thread_id, ''.join(traceback.format_stack(stack)))
+        print('Thread id: %s\n%s' % (thread_id, ''.join(traceback.format_stack(stack))))
 
-def reopen(signum, logfile):
-    print 'Signal %d received, reopening logs' % signum
+def reopen(logfile):
+    print('Signal %d received, reopening logs' % signum)
     if logfile == None:
         return
     fake_stdout = file(logfile, 'a', 1)
@@ -71,6 +74,9 @@ def reopen(signum, logfile):
     fd = fake_stdout.fileno()
     os.dup2(fd, sys.__stdout__.fileno())
     os.dup2(fd, sys.__stderr__.fileno())
+
+def terminate():
+    ED2.breakLoop()
 
 if __name__ == '__main__':
     global_config = {}
@@ -138,6 +144,7 @@ if __name__ == '__main__':
         sip_logger = SipLogger('rtp_cluster')
         global_config['_sip_logger'] = sip_logger
         LogSignal(sip_logger, signal.SIGUSR1, reopen, logfile)
+    LogSignal(sip_logger, signal.SIGTERM, terminate)
 
     sip_logger.write(' o initializing CLI...')
 
@@ -171,7 +178,7 @@ if __name__ == '__main__':
             else:
                 address = rtpp_config['address']
                 family = AF_UNIX
-            if rtpp_config.has_key('cmd_out_address'):
+            if 'cmd_out_address' in rtpp_config:
                 bind_address = rtpp_config['cmd_out_address']
             else:
                 bind_address = None
@@ -179,9 +186,9 @@ if __name__ == '__main__':
             rtpp.weight = rtpp_config['weight']
             rtpp.capacity = rtpp_config['capacity']
             rtpp.status = rtpp_config['status']
-            if rtpp_config.has_key('wan_address'):
+            if 'wan_address' in rtpp_config:
                 rtpp.wan_address = rtpp_config['wan_address']
-            if rtpp_config.has_key('lan_address'):
+            if 'lan_address' in rtpp_config:
                 rtpp.lan_address = rtpp_config['lan_address']
             rtp_cluster.add_member(rtpp)
         cli.rtp_clusters.append(rtp_cluster)
@@ -198,4 +205,4 @@ if __name__ == '__main__':
     if debug_threads:
         signal.signal(signal.SIGINFO, debug_signal)
     sip_logger.write('Initialization complete, have a good flight.')
-    reactor.run(installSignalHandlers = True)
+    ED2.loop()

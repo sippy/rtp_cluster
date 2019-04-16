@@ -26,6 +26,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import socket, sys, getopt
+from functools import reduce
 
 def cli_client(address, argv, tcp = False):
     if not tcp:
@@ -34,15 +35,15 @@ def cli_client(address, argv, tcp = False):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(address)
     command = reduce(lambda x, y: x + ' ' + y, argv)
-    s.send(command + '\nquit\n')
+    s.send(command.encode('ascii') + b'\nquit\n')
     while True:
         data = s.recv(1024)
         if len(data) == 0:
             break
-        sys.stdout.write(data)
+        sys.stdout.write(data.decode('ascii'))
 
 def usage():
-    print 'usage: rtp_cluster_client.py [-s cmdfile]'
+    print('usage: rtp_cluster_client.py [-s cmdfile]')
     sys.exit(1)
 
 if __name__ == '__main__':

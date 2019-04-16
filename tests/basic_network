@@ -5,9 +5,12 @@ set -x
 
 TEST_MAX_DUR=60
 
+export PYTHONPATH=../sippy_lite
+PYINT=${PYINT:-"python2"}
+
 write_siplog() {
   APPNAME=`basename "${0}"`
-  python2 ../sippy_lite/sippy/SipLogger.py "${APPNAME}" "${1}"
+  ${PYINT} ../sippy_lite/sippy/SipLogger.py "${APPNAME}" "${1}"
 }
 
 setup_rtpp() {
@@ -69,55 +72,55 @@ do
   start_rtpproxy ${i}
 done
 sed 's|%%STATUS%%|ACTIVE|g' basic_network.xml.in > basic_network.xml
-python2 ../rtp_cluster.py -f -s rtpc.sock -c basic_network.xml &
+${PYINT} ../rtp_cluster.py -f -s rtpc.sock -c basic_network.xml &
 RTPC_PID=${!}
 
 sleep 2
-python2 ../rtp_cluster_client.py -s rtpc.sock ls > rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls > rtpcc.out
 
 mark_tp "Testing: creating some sessions"
-python2 ../sippy_lite/sippy/tools/rtpp_query.py -S ../sippy_lite \
+${PYINT} ../sippy_lite/sippy/tools/rtpp_query.py -S ../sippy_lite \
  -i input/session_create -s udp:127.0.0.1:32324 > session_create.qout
 mark_tp "Testing: getting stats"
-python2 ../sippy_lite/sippy/tools/rtpp_query.py -S ../sippy_lite \
+${PYINT} ../sippy_lite/sippy/tools/rtpp_query.py -S ../sippy_lite \
  -i input/get_stats -s udp:127.0.0.1:32324 > get_stats.qout
 mark_tp "Testing: deleting sessions"
-python2 ../sippy_lite/sippy/tools/rtpp_query.py -S ../sippy_lite \
+${PYINT} ../sippy_lite/sippy/tools/rtpp_query.py -S ../sippy_lite \
  -i input/session_delete -s udp:127.0.0.1:32324 >> session_create.qout
 
 sed 's|%%STATUS%%|SUSPENDED|g' basic_network.xml.in > basic_network.xml
 
 mark_tp "Testing: reload command"
-python2 ../rtp_cluster_client.py -s rtpc.sock reload >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock reload >> rtpcc.out
 sleep 2
 mark_tp "Testing after suspending one"
-python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
 mark_tp "Testing: pause command"
-python2 ../rtp_cluster_client.py -s rtpc.sock modify basic_network pause RTPPROXY2 >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock modify basic_network pause RTPPROXY2 >> rtpcc.out
 sleep 2
 mark_tp "Testing after pausing RTPPROXY2"
-python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
 mark_tp "Testing: delete command"
-python2 ../rtp_cluster_client.py -s rtpc.sock modify basic_network delete RTPPROXY0 >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock modify basic_network delete RTPPROXY0 >> rtpcc.out
 sleep 2
 mark_tp "Testing after deleting RTPPROXY0"
-python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
-python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
 mark_tp "Testing: delete command"
-python2 ../rtp_cluster_client.py -s rtpc.sock modify basic_network delete RTPPROXY3 >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock modify basic_network delete RTPPROXY3 >> rtpcc.out
 sleep 2
 mark_tp "Testing after deleting RTPPROXY3"
-python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
-python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
 
 sleep ${RTPPROXY1_DUR}
 
 mark_tp "Testing: RTPproxy \"RTPPROXY1\" has changed status..."
 
-python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
-python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
 
-#python2 ../rtp_cluster_client.py -s _rtpp1.sock X
+#${PYINT} ../rtp_cluster_client.py -s _rtpp1.sock X
 
 wait ${RTPP1_PID}
 write_siplog "RTPProxy #1 has ended"
@@ -131,15 +134,15 @@ sleep ${MAX_RECOVERY_DUR}
 
 mark_tp "Testing: RTPproxy \"RTPPROXY2\", \"RTPPROXY1\" has changed status..."
 
-python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
-python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
 
 mark_tp "Testing: reload command"
 
-python2 ../rtp_cluster_client.py -s rtpc.sock reload >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock reload >> rtpcc.out
 sleep 2
-python2 ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
-python2 ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls >> rtpcc.out
+${PYINT} ../rtp_cluster_client.py -s rtpc.sock ls basic_network >> rtpcc.out
 
 for i in 0 1 2 3
 do

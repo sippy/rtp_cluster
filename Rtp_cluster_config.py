@@ -93,7 +93,7 @@ class ValidateHandler(ContentHandler):
         if self.ctx[-1] == 'rtp_cluster':
             if self.element == 'name':
                 for c in self.config:
-                    if c.has_key('name'):
+                    if 'name' in c:
                         if c['name'] == content:
                             raise Exception('rtp_cluster name should be unique: %s' % (content))
                 self.rtp_cluster['name'] = content
@@ -105,16 +105,16 @@ class ValidateHandler(ContentHandler):
                 if self.rtp_cluster['protocol'] in ('udp', 'udp6'):
                     content = content.rsplit(':', 1)
                     if len(content) == 1:
-                        self.rtp_cluster['address'] = (content[0].encode('ascii'), 22222)
+                        self.rtp_cluster['address'] = (content[0], 22222)
                     else:
-                        self.rtp_cluster['address'] = (content[0].encode('ascii'), int(content[1]))
+                        self.rtp_cluster['address'] = (content[0], int(content[1]))
                 else:
-                    self.rtp_cluster['address'] = content.encode('ascii')
+                    self.rtp_cluster['address'] = content
 
         elif self.ctx[-1] == 'rtpproxy':
             if self.element == 'name':
                 for c in self.rtp_cluster['rtpproxies']:
-                    if c.has_key('name'):
+                    if 'name' in c:
                          if c['name'] == content:
                              raise Exception('rtpproxy name should be unique within rtp_cluster: %s' % (content))
                 self.rtpproxy['name'] = content
@@ -123,13 +123,13 @@ class ValidateHandler(ContentHandler):
                 if self.rtpproxy['protocol'] not in ('udp', 'unix', 'udp6'):
                     raise Exception("rtpproxy protocol should be one of 'udp', 'udp6' or 'unix'")
             elif self.element == 'address':
-                self.rtpproxy['address'] = content.encode('ascii')
+                self.rtpproxy['address'] = content
             elif self.element == 'wan_address':
-                self.rtpproxy['wan_address'] = content.encode('ascii')
+                self.rtpproxy['wan_address'] = content
             elif self.element == 'lan_address':
-                self.rtpproxy['lan_address'] = content.encode('ascii')
+                self.rtpproxy['lan_address'] = content
             elif self.element == 'cmd_out_address':
-                self.rtpproxy['cmd_out_address'] = content.encode('ascii')
+                self.rtpproxy['cmd_out_address'] = content
             elif self.element == 'weight':
                 try:
                     self.rtpproxy['weight'] = int(content)
@@ -205,7 +205,7 @@ def read_cluster_config(global_config, config, debug = False):
             f = open(dtd)
             dtd = f.read()
             parser.feed(dtd)
-        except Exception, detail:
+        except Exception as detail:
             raise Exception('validation failed: %s' % (detail))
 
     parser.feed(config)
@@ -259,7 +259,7 @@ def gen_cluster_config(config):
             xml += '      <capacity>%s</capacity>\n' % escape(str(proxy['capacity']))
             xml += '      <status>%s</status>\n' % escape(proxy['status'])
             for key_name in ('wan_address', 'lan_address', 'cmd_out_address'):
-                if proxy.has_key(key_name):
+                if key_name in proxy:
                     xml += '      <%s>%s</%s>\n' % (key_name, escape(proxy[key_name]), key_name)
             xml += '    </rtpproxy>\n'
 
@@ -289,6 +289,6 @@ if __name__ == '__main__':
         global_config['_sip_logger'].write('Reading generated config...')
         config = read_cluster_config(global_config, config, True)
         
-    except Exception, detail:
+    except Exception as detail:
         global_config['_sip_logger'].write('error: %s' % detail)
         traceback.print_exc(file = sys.stderr)

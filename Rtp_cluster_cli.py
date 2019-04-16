@@ -30,10 +30,16 @@ from Rtp_cluster import Rtp_cluster
 from Rtp_cluster_member import Rtp_cluster_member
 
 from socket import AF_INET, AF_INET6, AF_UNIX
-from contrib.objgraph import typestats
-import operator
+##from contrib.objgraph import typestats
+##import operator
 
-from sippy_lite.sippy.Cli_server_local import Cli_server_local
+from sippy.CLIManager import CLIConnectionManager
+
+def format_address(addr):
+    if isinstance(addr, (list, tuple)):
+        return '%s:%d' % addr
+    else:
+        return (addr)
 
 class Rtp_cluster_cli(object):
     ccm = None
@@ -42,7 +48,7 @@ class Rtp_cluster_cli(object):
 
     def __init__(self, global_config, address):
         sown = global_config.get('_rtpc_sockowner', None)
-        self.ccm = Cli_server_local(self.receive_command, address, sown)
+        self.ccm = CLIConnectionManager(self.receive_command, address, sown)
         self.rtp_clusters = []
         self.global_config = global_config
 
@@ -67,7 +73,7 @@ class Rtp_cluster_cli(object):
                         clim.send('\n')                
                     clim.send('Cluster: #%d\n' % idx)
                     clim.send('    name = %s\n' % rtp_cluster.name)
-                    clim.send('    address = %s\n' % str(rtp_cluster.address))
+                    clim.send('    address = %s\n' % format_address(rtp_cluster.address))
                     clim.send('    online members = %d (%d active, %d suspended, %d draining)\n' % \
                       (nonline, nonline - nsuspended - ndraining, nsuspended, \
                       ndraining))
@@ -85,7 +91,7 @@ class Rtp_cluster_cli(object):
                         clim.send('\n')
                     clim.send(    '    RTPproxy: #%d\n' % ridx)
                     clim.send(    '        name = %s\n' % rtpp.name)
-                    clim.send(    '        address = %s\n' % str(rtpp.address))
+                    clim.send(    '        address = %s\n' % format_address(rtpp.address))
                     if rtpp.wan_address != None:
                         clim.send('        wan_address = %s\n' % rtpp.wan_address)
                     if rtpp.lan_address != None:
@@ -115,7 +121,7 @@ class Rtp_cluster_cli(object):
                         clim.send('\n')
                     clim.send(    '    RTPproxy: #%d\n' % ridx)
                     clim.send(    '        name = %s\n' % rtpp.name)
-                    clim.send(    '        address = %s\n' % str(rtpp.address))
+                    clim.send(    '        address = %s\n' % format_address(rtpp.address))
                     if rtpp.wan_address != None:
                         clim.send('        wan_address = %s\n' % rtpp.wan_address)
                     if rtpp.lan_address != None:
@@ -163,15 +169,15 @@ class Rtp_cluster_cli(object):
                 else:
                     address = rtpp_config['address']
                     family = AF_UNIX
-                if rtpp_config.has_key('cmd_out_address'):
+                if 'cmd_out_address' in rtpp_config:
                     bind_address = rtpp_config['cmd_out_address']
                 else:
                     bind_address = None
                 rtpp = Rtp_cluster_member(rtpp_config['name'], self.global_config, \
                   address, bind_address, family = family)
-                if rtpp_config.has_key('wan_address'):
+                if 'wan_address' in rtpp_config:
                     rtpp.wan_address = rtpp_config['wan_address']
-                if rtpp_config.has_key('lan_address'):
+                if 'lan_address' in rtpp_config:
                     rtpp.lan_address = rtpp_config['lan_address']
                 rtpp.weight = int(rtpp_config['weight'])
                 rtpp.capacity = int(rtpp_config['capacity'])
@@ -236,7 +242,7 @@ class Rtp_cluster_cli(object):
                         family = AF_UNIX
                     rtpp, idx = rtp_cluster.rtpp_by_name(rtpp_config['name'])
                     if rtpp == None:
-                        if rtpp_config.has_key('cmd_out_address'):
+                        if 'cmd_out_address' in rtpp_config:
                             bind_address = rtpp_config['cmd_out_address']
                         else:
                             bind_address = None
@@ -245,14 +251,14 @@ class Rtp_cluster_cli(object):
                         rtpp.weight = rtpp_config['weight']
                         rtpp.capacity = rtpp_config['capacity']
                         rtpp.status = rtpp_config['status']
-                        if rtpp_config.has_key('wan_address'):
+                        if 'wan_address' in rtpp_config:
                             rtpp.wan_address = rtpp_config['wan_address']
-                        if rtpp_config.has_key('lan_address'):
+                        if 'lan_address' in rtpp_config:
                             rtpp.lan_address = rtpp_config['lan_address']
                         rtpp.status = rtpp_config['status'].upper()
                         rtp_cluster.add_member(rtpp)
                     else:
-                        if rtpp_config.has_key('cmd_out_address'):
+                        if 'cmd_out_address' in rtpp_config:
                             rtpp.cmd_out_address = rtpp_config['cmd_out_address']
                         else:
                             rtpp.cmd_out_address = None
@@ -260,11 +266,11 @@ class Rtp_cluster_cli(object):
                         rtpp.weight = rtpp_config['weight']
                         rtpp.capacity = rtpp_config['capacity']
                         rtpp.status = rtpp_config['status']
-                        if rtpp_config.has_key('wan_address'):
+                        if 'wan_address' in rtpp_config:
                             rtpp.wan_address = rtpp_config['wan_address']
                         else:
                             rtpp.wan_address = None
-                        if rtpp_config.has_key('lan_address'):
+                        if 'lan_address' in rtpp_config:
                             rtpp.lan_address = rtpp_config['lan_address']
                         else:
                             rtpp.lan_address = None
@@ -280,18 +286,18 @@ class Rtp_cluster_cli(object):
             clim.send('Loaded %d clusters and %d RTP proxies\n' % (len(self.rtp_clusters), new_rtpps_count))
             clim.send('OK\n')
             return False
-        if cmd.startswith('objstats'):
-            parts = cmd.split(None, 2)
-            if len(parts) > 1:
-                limit = int(parts[1])
-            else:
-                limit = 20
-            stats = sorted(typestats().items(), key=operator.itemgetter(1),
-              reverse=True)
-            stats = stats[:limit]
-            width = max(len(name) for name, count in stats)
-            for name, count in stats[:limit]:
-                clim.send('\t%s %d\n' % (name.ljust(width), count))
-            return False
+        ##if cmd.startswith('objstats'):
+        ##    parts = cmd.split(None, 2)
+        ##    if len(parts) > 1:
+        ##        limit = int(parts[1])
+        ##    else:
+        ##        limit = 20
+        ##    stats = sorted(typestats().items(), key=operator.itemgetter(1),
+        ##      reverse=True)
+        ##    stats = stats[:limit]
+        ##    width = max(len(name) for name, count in stats)
+        ##    for name, count in stats[:limit]:
+        ##        clim.send('\t%s %d\n' % (name.ljust(width), count))
+        ##    return False
         clim.send('ERROR: unknown command\n')
         return False

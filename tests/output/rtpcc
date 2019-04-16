@@ -1,6 +1,6 @@
 Cluster: #0
     name = basic_network
-    address = ('127.0.0.1', 32324)
+    address = 127.0.0.1:32324
     online members = 3 (3 active, 0 suspended, 0 draining)
     offline members = 1
 OK
@@ -13,7 +13,7 @@ OK
 ----- [TP5: Testing after suspending one] -----
 Cluster: #0
     name = basic_network
-    address = ('127.0.0.1', 32324)
+    address = 127.0.0.1:32324
     online members = 3 (2 active, 1 suspended, 0 draining)
     offline members = 1
 OK
@@ -22,7 +22,7 @@ OK
 ----- [TP7: Testing after pausing RTPPROXY2] -----
 Cluster: #0
     name = basic_network
-    address = ('127.0.0.1', 32324)
+    address = 127.0.0.1:32324
     online members = 3 (1 active, 2 suspended, 0 draining)
     offline members = 1
 OK
@@ -31,14 +31,14 @@ OK
 ----- [TP9: Testing after deleting RTPPROXY0] -----
 Cluster: #0
     name = basic_network
-    address = ('127.0.0.1', 32324)
+    address = 127.0.0.1:32324
     online members = 2 (0 active, 2 suspended, 0 draining)
     offline members = 1
 OK
 Online members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY1
-        address = ('127.0.0.1', 32323)
+        address = 127.0.0.1:32323
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100
@@ -50,7 +50,7 @@ Online members of the cluster #0:
 
     RTPproxy: #1
         name = RTPPROXY2
-        address = ('[::1]', 32322)
+        address = [::1]:32322
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100
@@ -63,7 +63,7 @@ Online members of the cluster #0:
 Offline members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY3
-        address = ('[::1]', 32323)
+        address = [::1]:32323
         weight = 100
         capacity = 2500
         state = offline
@@ -73,14 +73,14 @@ OK
 ----- [TP11: Testing after deleting RTPPROXY3] -----
 Cluster: #0
     name = basic_network
-    address = ('127.0.0.1', 32324)
+    address = 127.0.0.1:32324
     online members = 2 (0 active, 2 suspended, 0 draining)
     offline members = 0
 OK
 Online members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY1
-        address = ('127.0.0.1', 32323)
+        address = 127.0.0.1:32323
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100
@@ -92,7 +92,7 @@ Online members of the cluster #0:
 
     RTPproxy: #1
         name = RTPPROXY2
-        address = ('[::1]', 32322)
+        address = [::1]:32322
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100
@@ -108,14 +108,14 @@ OK
 ----- [TP12: Testing: RTPproxy "RTPPROXY1" has changed status...] -----
 Cluster: #0
     name = basic_network
-    address = ('127.0.0.1', 32324)
+    address = 127.0.0.1:32324
     online members = 1 (0 active, 1 suspended, 0 draining)
     offline members = 1
 OK
 Online members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY2
-        address = ('[::1]', 32322)
+        address = [::1]:32322
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100
@@ -128,7 +128,7 @@ Online members of the cluster #0:
 Offline members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY1
-        address = ('127.0.0.1', 32323)
+        address = 127.0.0.1:32323
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100
@@ -138,14 +138,14 @@ OK
 ----- [TP13: Testing: RTPproxy "RTPPROXY2", "RTPPROXY1" has changed status...] -----
 Cluster: #0
     name = basic_network
-    address = ('127.0.0.1', 32324)
+    address = 127.0.0.1:32324
     online members = 1 (0 active, 1 suspended, 0 draining)
     offline members = 1
 OK
 Online members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY1
-        address = ('127.0.0.1', 32323)
+        address = 127.0.0.1:32323
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100
@@ -158,7 +158,7 @@ Online members of the cluster #0:
 Offline members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY2
-        address = ('[::1]', 32322)
+        address = [::1]:32322
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100
@@ -170,14 +170,14 @@ Loaded 1 clusters and 4 RTP proxies
 OK
 Cluster: #0
     name = basic_network
-    address = ('127.0.0.1', 32324)
+    address = 127.0.0.1:32324
     online members = 2 (1 active, 1 suspended, 0 draining)
     offline members = 2
 OK
 Online members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY1
-        address = ('127.0.0.1', 32323)
+        address = 127.0.0.1:32323
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100
@@ -189,7 +189,7 @@ Online members of the cluster #0:
 
     RTPproxy: #1
         name = RTPPROXY3
-        address = ('[::1]', 32323)
+        address = [::1]:32323
         weight = 100
         capacity = 2500
         state = online
@@ -200,7 +200,7 @@ Online members of the cluster #0:
 Offline members of the cluster #0:
     RTPproxy: #0
         name = RTPPROXY2
-        address = ('[::1]', 32322)
+        address = [::1]:32322
         wan_address = 1.2.3.4
         lan_address = 127.0.0.1
         weight = 100

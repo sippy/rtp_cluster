@@ -23,18 +23,18 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from twisted.internet import reactor
-from urllib import quote, unquote
+try:
+    from urllib import quote, unquote
+except ImportError:
+    from urllib.parse import quote, unquote
 
 from DNRelay import DNRelay
 
-import sys
-sys.path.append('..')
-
-from sippy_lite.sippy.Cli_server_local import Cli_server_local
-from sippy_lite.sippy.Udp_server import Udp_server, Udp_server_opts
-from sippy_lite.sippy.Rtp_proxy_cmd import Rtp_proxy_cmd, Rtpp_stats
-from sippy_lite.sippy.Timeout import TimeoutInact
+from sippy.CLIManager import CLIConnectionManager
+from sippy.Udp_server import Udp_server, Udp_server_opts
+from sippy.Rtp_proxy_cmd import Rtp_proxy_cmd, Rtpp_stats
+from sippy.Time.Timeout import TimeoutInact
+from sippy.Core.EventDispatcher import ED2
 
 from random import random
 
@@ -101,7 +101,7 @@ class Rtp_cluster(object):
         else:
             sown = global_config.get('_rtpc_sockowner', None)
             if not dry_run:
-                self.ccm = Cli_server_local(self.up_command, address, sown)
+                self.ccm = CLIConnectionManager(self.up_command, address, sown)
                 self.ccm.protocol.expect_lf = False
         self.global_config = global_config
         self.name = name
@@ -137,7 +137,7 @@ class Rtp_cluster(object):
             self.dnrelay.allow_from(member.address)
 
     def up_command_udp(self, data, address, server, rtime):
-        dataparts = data.split(None, 1)
+        dataparts = data.decode('ascii').split(None, 1)
         if len(dataparts) == 1:
             return
         cookie, cmd = dataparts
@@ -155,7 +155,7 @@ class Rtp_cluster(object):
         return self.up_command(clim, cmd)
 
     def up_command(self, clim, orig_cmd):
-        #print 'up_command', orig_cmd
+        #print('up_command', orig_cmd)
         cmd = Rtp_proxy_cmd(orig_cmd)
         response_handler = self.down_command
         #print cmd
@@ -437,4 +437,4 @@ class Rtp_cluster(object):
 if __name__ == '__main__':
     global_config = {}
     rtp_cluster = Rtp_cluster(global_config, 'supercluster')
-    reactor.run(installSignalHandlers = True)
+    ED2.loop()
