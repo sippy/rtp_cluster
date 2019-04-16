@@ -78,7 +78,7 @@ class AsyncSender(Thread):
                     if isinstance(why, BrokenPipeError):
                         self.userv = None
                         return
-                    if why[0] not in (EWOULDBLOCK, ENOBUFS, EAGAIN):
+                    if why.errno not in (EWOULDBLOCK, ENOBUFS, EAGAIN):
                         break
                 sleep(0.01)
         self.userv = None
@@ -110,9 +110,9 @@ class AsyncReceiver(Thread):
                     maxemptydata = 100
                 rtime = MonoTime()
             except Exception as why:
-                if isinstance(why, socket.error) and why[0] in (ECONNRESET, ENOTCONN, ESHUTDOWN):
+                if isinstance(why, socket.error) and why.errno in (ECONNRESET, ENOTCONN, ESHUTDOWN):
                     break
-                if isinstance(why, socket.error) and why[0] in (EINTR,):
+                if isinstance(why, socket.error) and why.errno in (EINTR,):
                     continue
                 else:
                     print(datetime.now(), 'Udp_server: unhandled exception when receiving incoming data')
