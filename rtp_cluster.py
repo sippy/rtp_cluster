@@ -27,7 +27,11 @@
 
 import sys
 
-sys.path.insert(0, './sippy_lite')
+from os.path import dirname, abspath, join as path_join
+from inspect import getfile, currentframe
+currentdir = dirname(abspath(getfile(currentframe())))
+sippydir = path_join(currentdir, 'sippy_lite')
+sys.path.insert(0, sippydir)
 
 from Rtp_cluster_config import read_cluster_config
 from Rtp_cluster import Rtp_cluster
