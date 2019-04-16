@@ -35,9 +35,6 @@ cd libelperiodic
 make all
 sudo make install
 sudo ldconfig
-for pyint in python python2 python3
-do
-  ${pyint} setup.py clean build install
-  ${pyint} -c "from elperiodic.ElPeriodic import ElPeriodic"
-done
+python setup.py clean build install
+python -c "from elperiodic.ElPeriodic import ElPeriodic"
 cd ..
