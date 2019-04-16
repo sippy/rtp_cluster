@@ -6,7 +6,7 @@ set -x
 TEST_MAX_DUR=60
 
 export PYTHONPATH=../sippy_lite
-PYINT=${PYINT:-"python2"}
+PYINT=${PYINT:-"python"}
 
 write_siplog() {
   APPNAME=`basename "${0}"`
