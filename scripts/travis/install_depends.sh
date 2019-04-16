@@ -27,3 +27,16 @@ git clone -b "${RTPP_BRANCH}" --recursive git://github.com/sippy/rtpproxy.git
 cd rtpproxy
 ./configure
 ${MAKE_CMD} all
+cd ..
+
+git clone git://github.com/sobomax/libelperiodic.git
+cd libelperiodic
+./configure
+make all
+sudo make install
+for pyint in python2 python3
+do
+  ${pyint} setup.py build
+  sudo ${pyint} setup.py install
+done
+cd ..
