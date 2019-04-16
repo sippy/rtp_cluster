@@ -39,6 +39,12 @@ from sippy.Core.EventDispatcher import ED2
 from sippy.Time.Timeout import Timeout
 from sippy.Time.MonoTime import MonoTime
 
+# XXX: python 2.7 compat hack
+try: __x = BrokenPipeError
+except NameError:
+    class BrokenPipeError(OSError):
+        pass
+
 class AsyncSender(Thread):
     userv = None
 
