@@ -34,6 +34,7 @@ cd libelperiodic
 ./configure
 make all
 sudo make install
+sudo ldconfig
 for pyint in python python2 python3
 do
   ${pyint} setup.py build
