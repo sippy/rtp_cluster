@@ -34,7 +34,7 @@ cd libelperiodic
 ./configure
 make all
 sudo make install
-for pyint in python2 python3
+for pyint in python python2 python3
 do
   ${pyint} setup.py build
   sudo ${pyint} setup.py install
