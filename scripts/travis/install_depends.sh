@@ -38,5 +38,6 @@ for pyint in python python2 python3
 do
   ${pyint} setup.py build
   sudo ${pyint} setup.py install
+  ${pyint} -c "from elperiodic.ElPeriodic import ElPeriodic"
 done
 cd ..
