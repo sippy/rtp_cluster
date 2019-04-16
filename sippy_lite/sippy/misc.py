@@ -26,7 +26,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os, sys
+import os, sys, socket
 
 def daemonize(logfile = None):
     # Fork once
@@ -40,7 +40,7 @@ def daemonize(logfile = None):
     fd = os.open('/dev/null', os.O_RDWR)
     os.dup2(fd, sys.__stdin__.fileno())
     if logfile != None:
-        fake_stdout = file(logfile, 'a', 1)
+        fake_stdout = open(logfile, 'a', 1)
         sys.stdout = fake_stdout
         sys.stderr = fake_stdout
         fd = fake_stdout.fileno()
@@ -48,3 +48,17 @@ def daemonize(logfile = None):
     os.dup2(fd, sys.__stderr__.fileno())
     if logfile == None:
         os.close(fd)
+
+def local4remote(lookup_address, family = socket.AF_INET):
+    skt = socket.socket(family, socket.SOCK_DGRAM)
+    ai = socket.getaddrinfo(lookup_address, None, family)
+    if family == socket.AF_INET:
+        _address = (ai[0][4][0], 12345)
+    else:
+        _address = (ai[0][4][0], 12345, ai[0][4][2], ai[0][4][3])
+    skt.connect(_address)
+    if family == socket.AF_INET:
+        laddress = skt.getsockname()[0]
+    else:
+        laddress = '[%s]' % skt.getsockname()[0]
+    return laddress
