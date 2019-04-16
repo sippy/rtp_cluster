@@ -37,8 +37,7 @@ sudo make install
 sudo ldconfig
 for pyint in python python2 python3
 do
-  ${pyint} setup.py build
-  sudo ${pyint} setup.py install
+  ${pyint} setup.py clean build install
   ${pyint} -c "from elperiodic.ElPeriodic import ElPeriodic"
 done
 cd ..
