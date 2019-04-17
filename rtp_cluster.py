@@ -72,7 +72,7 @@ def reopen(logfile):
     print('Signal %d received, reopening logs' % signum)
     if logfile == None:
         return
-    fake_stdout = file(logfile, 'a', 1)
+    fake_stdout = open(logfile, 'a', 1)
     sys.stdout = fake_stdout
     sys.stderr = fake_stdout
     fd = fake_stdout.fileno()
@@ -144,7 +144,7 @@ if __name__ == '__main__':
         # thread won't be affected by the fork()
         sip_logger.shutdown()
         daemonize(logfile = logfile)
-        file(pidfile, 'w').write(str(os.getpid()) + '\n')
+        open(pidfile, 'w').write(str(os.getpid()) + '\n')
         sip_logger = SipLogger('rtp_cluster')
         global_config['_sip_logger'] = sip_logger
         LogSignal(sip_logger, signal.SIGUSR1, reopen, logfile)
