@@ -102,7 +102,6 @@ class Rtp_cluster(object):
             sown = global_config.get('_rtpc_sockowner', None)
             if not dry_run:
                 self.ccm = CLIConnectionManager(self.up_command, address, sown)
-                self.ccm.protocol.expect_lf = False
         self.global_config = global_config
         self.name = name
         self.address = address
