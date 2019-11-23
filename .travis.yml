@@ -13,7 +13,5 @@ script:
 env:
   - RTPP_TEST_VER=production RTPP_BRANCH=master
   - RTPP_TEST_VER=debug RTPP_BRANCH=master
-  - RTPP_TEST_VER=production RTPP_BRANCH=rtpp_2_1
-  - RTPP_TEST_VER=debug RTPP_BRANCH=rtpp_2_1
-  - RTPP_TEST_VER=production RTPP_BRANCH=rtpp_2_0
-  - RTPP_TEST_VER=debug RTPP_BRANCH=rtpp_2_0
+  - RTPP_TEST_VER=production RTPP_BRANCH=24ec63197d2ec7bb2eebc92043fa613fddf30b7d
+  - RTPP_TEST_VER=debug RTPP_BRANCH=24ec63197d2ec7bb2eebc92043fa613fddf30b7d
