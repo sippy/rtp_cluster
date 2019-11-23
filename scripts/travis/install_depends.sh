@@ -14,15 +14,16 @@ fi
 mkdir "${DISTDIR}"
 cd "${DISTDIR}"
 
-RTPP_BRANCH=${RTPP_BRANCH:-"master"}
+RTPP_REV=${RTPP_BRANCH:-"master"}
 MAKE_CMD="make"
-git clone -b "${RTPP_BRANCH}" --recursive git://github.com/sippy/rtpproxy.git
+git clone --recursive git://github.com/sippy/rtpproxy.git
 
-##if [ "${RTPP_BRANCH}" != "master" ]
-##then
+if [ "${RTPP_REV}" != "master" ]
+then
+  git -C rtpproxy checkout "${RTPP_REV}"
 ##  git clone -b master --recursive git://github.com/sippy/rtpproxy.git \
 ##   "${RTPPDDIR_m}"
-##fi
+fi
 
 cd rtpproxy
 ./configure
