@@ -268,7 +268,9 @@ class Udp_server(object):
     def shutdown(self):
         try:
             self.skt.shutdown(socket.SHUT_RDWR)
-        except:
+        except Exception as e:
+            if not isinstance(e, socket.error) or e.errno != ENOTCONN:
+                dump_exception('exception in the self.skt.shutdown()')
             pass
         self.wi_available.acquire()
         self.wi.append(None)
