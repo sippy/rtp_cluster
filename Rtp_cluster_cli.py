@@ -68,9 +68,9 @@ class Rtp_cluster_cli(object):
                 for rtp_cluster in self.rtp_clusters:
                     nonline = len(rtp_cluster.active)
                     nsuspended = len([x for x in rtp_cluster.active if x.status == 'SUSPENDED'])
-                    ndraining = len([x for x in rtp_cluster.active if x.status == 'DRAINING'])                    
+                    ndraining = len([x for x in rtp_cluster.active if x.status == 'DRAINING'])
                     if idx > 0:
-                        clim.send('\n')                
+                        clim.send('\n')
                     clim.send('Cluster: #%d\n' % idx)
                     clim.send('    name = %s\n' % rtp_cluster.name)
                     clim.send('    address = %s\n' % format_address(rtp_cluster.address))
