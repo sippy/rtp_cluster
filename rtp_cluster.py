@@ -68,8 +68,8 @@ def debug_signal(signum, frame):
     for thread_id, stack in sys._current_frames().iteritems():
         print('Thread id: %s\n%s' % (thread_id, ''.join(traceback.format_stack(stack))))
 
-def reopen(logfile):
-    print('Signal %d received, reopening logs' % signum)
+def reopen(signum, logfile, signame):
+    print('Signal %s received, reopening logs' % signame)
     if logfile == None:
         return
     fake_stdout = open(logfile, 'a', 1)
@@ -79,7 +79,7 @@ def reopen(logfile):
     os.dup2(fd, sys.__stdout__.fileno())
     os.dup2(fd, sys.__stderr__.fileno())
 
-def terminate():
+def terminate(signum):
     ED2.breakLoop()
 
 if __name__ == '__main__':
@@ -147,7 +147,7 @@ if __name__ == '__main__':
         open(pidfile, 'w').write(str(os.getpid()) + '\n')
         sip_logger = SipLogger('rtp_cluster')
         global_config['_sip_logger'] = sip_logger
-        LogSignal(sip_logger, signal.SIGUSR1, reopen, logfile)
+        LogSignal(sip_logger, signal.SIGUSR1, reopen, logfile, 'SIGUSR1')
     LogSignal(sip_logger, signal.SIGTERM, terminate)
 
     sip_logger.write(' o initializing CLI...')
