@@ -270,10 +270,11 @@ class Rtp_cluster(object):
         rtpp.send_command(out_cmd, response_handler, clim, cmd, rtpp)
 
     def ignore_response(self, result, clim, cmd, rtpp):
+        if result is None:
+            return
         self.global_config['_sip_logger'].write('Got delayed response ' \
           'from node "%s" to already completed request, ignoring: "%s"' \
           % (rtpp.name, result))
-        return
 
     def down_command(self, result, clim, cmd, rtpp):
         if isinstance(clim, UdpCLIM) and clim.cookie in self.commands_inflight:
