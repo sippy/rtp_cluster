@@ -214,7 +214,7 @@ class Rtp_cluster(object):
                 # Existing session we know nothing about
                 if cmd.type == 'U':
                     # Do a forced lookup
-                    orig_cmd = 'L%s' % cmd.ul_opts.getstr(cmd.call_id, swaptags = True)
+                    orig_cmd = 'L%s' % cmd.ul_opts.getstr(cmd.call_id, swaptags = True, skipnotify = True)
                 active = [x for x in self.active if x.online]
                 br = Broadcaster(len(active), clim, cmd)
                 for rtpp in active:
