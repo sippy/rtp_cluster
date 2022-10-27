@@ -198,6 +198,8 @@ class Rtp_cluster_cli(object):
                     rtpp.status = 'ACTIVE'
                 clim.send('OK\n')
                 return False
+            clim.send('ERROR: unsupported action: "%s"\n' % (parts[2],))
+            return False
         if cmd in ('h', 'help'):
                 clim.send('Supported commands:\n' \
                   '\tls [CLUSTER_NAME]\n' \
