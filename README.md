@@ -62,7 +62,7 @@ connect to unix domain sockets), or using the supplied
  * gracefully remove specified RTPproxy from the cluster. The software
    will check if there any sessions already in progress and will wait for
    them to finish before removing the entry completely;
-* `modify <cluster name> suspend <rtpproxy name>`
+* `modify <cluster name> pause <rtpproxy name>`
  * temporary suspend specified RTPproxy and do not create any new sessions
    in it. The proxy remains in the cluster configuration;
 * `modify <cluster name> resume <rtpproxy name>`
