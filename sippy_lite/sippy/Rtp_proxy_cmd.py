@@ -77,7 +77,7 @@ class UpdateLookupOpts(object):
                 if len(val) > 0:
                     self.otherparams += val
 
-    def getstr(self, call_id, swaptags = False):
+    def getstr(self, call_id, swaptags = False, skipnotify = False):
         s = ''
         if self.destination_ip != None:
             s += 'R%s' % (self.destination_ip,)
@@ -101,14 +101,15 @@ class UpdateLookupOpts(object):
             if self.to_tag == None:
                 raise Exception('UpdateLookupOpts::getstr(swaptags = True): to_tag is not set')
             to_tag, from_tag = (self.from_tag, self.to_tag)
-        if self.from_tag != None:
-            s = '%s %s' % (s, self.from_tag)
-        if self.to_tag != None:
-            s = '%s %s' % (s, self.to_tag)
-        if self.notify_socket != None:
-            s = '%s %s' % (s, self.notify_socket)
-        if self.notify_tag != None:
-            s = '%s %s' % (s, self.notify_tag)
+        if from_tag != None:
+            s = '%s %s' % (s, from_tag)
+        if to_tag != None:
+            s = '%s %s' % (s, to_tag)
+        if not skipnotify:
+            if self.notify_socket != None:
+                s = '%s %s' % (s, self.notify_socket)
+            if self.notify_tag != None:
+                s = '%s %s' % (s, self.notify_tag)
         return s
 
 class Rtp_proxy_cmd(object):
