@@ -23,6 +23,8 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+from errno import EADDRINUSE
+
 try:
     from urllib import quote, unquote
 except ImportError:
@@ -109,9 +111,9 @@ class Rtp_cluster(object):
         self.cache_purge_el = TimeoutInact(self.rCachePurge, 10, -1)
         self.cache_purge_el.spread_runs(0.1)
         self.cache_purge_el.go()
-        self.update_dnrelay(dnconfig)
+        self.update_dnrelay(dnconfig, dry_run)
 
-    def update_dnrelay(self, dnconfig):
+    def update_dnrelay(self, dnconfig, dry_run = False):
         if self.dnrelay != None:
             if dnconfig != None and self.dnrelay.cmpconfig(dnconfig):
                 return
@@ -122,7 +124,11 @@ class Rtp_cluster(object):
             allow_from = None
         if dnconfig == None:
             return
-        self.dnrelay = DNRelay(dnconfig, self.global_config['_sip_logger'])
+        try:
+            self.dnrelay = DNRelay(dnconfig, self.global_config['_sip_logger'])
+        except OSError as ex:
+            if not dry_run or ex.errno != EADDRINUSE:
+                raise
         if allow_from != None:
             self.dnrelay.set_allow_list(allow_from)
 
