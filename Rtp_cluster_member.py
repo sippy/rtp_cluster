@@ -143,8 +143,9 @@ class Rtp_cluster_member(Rtp_proxy_client):
             # Do not age if there are less than 1000 calls in the list
             self.call_id_map_old = []
             return
-        self.call_id_map_old = self.call_id_map[len(self.call_id_map) / 2:]
-        del self.call_id_map[len(self.call_id_map) / 2:]
+        new_len = int(len(self.call_id_map) / 2)
+        self.call_id_map_old = self.call_id_map[new_len:]
+        del self.call_id_map[new_len:]
 
     def get_caputil(self):
         return (self.asess_filtered.get() / self.capacity)
