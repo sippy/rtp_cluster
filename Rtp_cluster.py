@@ -24,6 +24,8 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from errno import EADDRINUSE
+from random import random
+from functools import partial
 
 try:
     from urllib import quote, unquote
@@ -38,7 +40,6 @@ from sippy.Rtp_proxy_cmd import Rtp_proxy_cmd, Rtpp_stats
 from sippy.Time.Timeout import TimeoutInact
 from sippy.Core.EventDispatcher import ED2
 
-from random import random
 
 def is_dst_local(destination_ip):
     #if destination_ip == '192.168.22.11':
@@ -160,7 +161,7 @@ class Rtp_cluster(object):
         return self.up_command(clim, cmd)
 
     def up_command(self, clim, orig_cmd):
-        #print('up_command', orig_cmd)
+        #print(f'up_command({orig_cmd=})')
         cmd = Rtp_proxy_cmd(orig_cmd)
         response_handler = self.down_command
         #print cmd
@@ -168,7 +169,7 @@ class Rtp_cluster(object):
             self.down_command('E999', clim, cmd, None)
             return
         if cmd.type in ('U', 'L', 'D', 'P', 'S', 'R', 'C', 'Q'):
-            #print 'up', cmd.call_id, str(cmd)
+            #print(f'up_command: {cmd.call_id=}, {orig_cmd=}, {str(cmd)=}')
             for rtpp in self.active:
                 if rtpp.isYours(cmd.call_id):
                     break
@@ -228,7 +229,6 @@ class Rtp_cluster(object):
                         out_cmd = Rtp_proxy_cmd(orig_cmd)
                         out_cmd.ul_opts.local_ip = rtpp.lan_address
                         out_cmd.ul_opts.destination_ip = None
-                        out_cmd = str(out_cmd)
                     else:
                         out_cmd = orig_cmd
                     rtpp.send_command(out_cmd, self.merge_results, br, rtpp)
@@ -270,37 +270,37 @@ class Rtp_cluster(object):
             out_cmd = Rtp_proxy_cmd(orig_cmd)
             out_cmd.ul_opts.local_ip = rtpp.lan_address
             out_cmd.ul_opts.destination_ip = None
-            out_cmd = str(out_cmd)
         else:
             out_cmd = orig_cmd
-        rtpp.send_command(out_cmd, response_handler, clim, cmd, rtpp)
+        rtpp.send_command(str(out_cmd), partial(response_handler, clim, cmd, out_cmd, rtpp))
 
-    def ignore_response(self, result, clim, cmd, rtpp):
+    def ignore_response(self, clim, cmd, out_cmd, rtpp, result):
         if result is None:
             return
         self.global_config['_sip_logger'].write('Got delayed response ' \
           'from node "%s" to already completed request, ignoring: "%s"' \
           % (rtpp.name, result))
 
-    def down_command(self, result, clim, cmd, rtpp):
+    def down_command(self, clim, cmd, out_cmd, rtpp, result):
         if isinstance(clim, UdpCLIM) and clim.cookie in self.commands_inflight:
             self.commands_inflight.remove(clim.cookie)
-        #print 'down', result
+        #if cmd.type in ('U', 'L'): print(f'down_command({result=})')
         if result == None:
             result = 'E997'
         elif cmd.type in ('U', 'L') and not result[0].upper() == 'E' and \
           rtpp.wan_address != None:
-            #print 'down', cmd.ul_opts.destination_ip, rtpp.wan_address
+            #print(f'down_command: {cmd.ul_opts.destination_ip=}, {cmd.ul_opts.local_ip=}, {rtpp.wan_address=}')
             req_dip = cmd.ul_opts.destination_ip
             req_lip = cmd.ul_opts.local_ip
+            req_lip_out = out_cmd.ul_opts.local_ip
             result_parts = result.strip().split()
             if result_parts[0] != '0' and req_dip != None and not is_dst_local(req_dip) and \
               req_lip != rtpp.lan_address:
                 result = '%s %s' % (result_parts[0], rtpp.wan_address)
-            elif result_parts[0] != '0' and req_lip == None:
+            elif result_parts[0] != '0' and (req_lip is None or req_lip_out == rtpp.lan_address):
                 result = '%s %s' % (result_parts[0], rtpp.wan_address)
         #    result = '%s %s' % (result_parts[0], '192.168.1.22')
-        #print 'down clim.send', result
+        #if cmd.type in ('U', 'L'): print(f'down_command: clim.send({result=})')
         response = result + '\n'
         clim.send(response)
         if isinstance(clim, UdpCLIM):
