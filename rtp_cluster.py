@@ -148,7 +148,7 @@ if __name__ == '__main__':
         sip_logger = SipLogger('rtp_cluster')
         global_config['_sip_logger'] = sip_logger
         LogSignal(sip_logger, signal.SIGUSR1, reopen, logfile, 'SIGUSR1')
-    LogSignal(sip_logger, signal.SIGTERM, terminate)
+    LogSignal(sip_logger, signal.SIGTERM, terminate, signal.SIGTERM)
 
     sip_logger.write(' o initializing CLI...')
 
