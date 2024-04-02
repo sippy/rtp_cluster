@@ -1,3 +1,4 @@
+SHELL="${SHELL:-"/bin/sh"}"
 BUILDDIR="${BUILDDIR:-${BASEDIR}}"
 
 DISTDIR="${BUILDDIR}/dist"

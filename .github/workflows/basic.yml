@@ -1,0 +1,31 @@
+name: Python Test Workflow
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      RTPP_TEST_VER: ${{ matrix.rtpp_test_ver }}
+      RTPP_BRANCH: ${{ matrix.rtpp_branch }}
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11']
+        rtpp-test-ver: ['production', 'debug']
+        rtpp-branch: ['master', 'v3.0.1', 'rtpp_2_2_1', 'rtpp_2_1', 'rtpp_2_0']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Before install scripts
+      run: |
+        sh -x ./scripts/travis/hack_travis_ipv6.sh
+        sh -x ./scripts/travis/install_depends.sh
+
+    - name: Run tests
+      run: sh -x ./scripts/travis/test_run.sh

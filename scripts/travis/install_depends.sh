@@ -16,11 +16,11 @@ cd "${DISTDIR}"
 
 RTPP_BRANCH=${RTPP_BRANCH:-"master"}
 MAKE_CMD="make"
-git clone -b "${RTPP_BRANCH}" --recursive git://github.com/sippy/rtpproxy.git
+git clone -b "${RTPP_BRANCH}" --recursive https://github.com/sippy/rtpproxy.git
 
 ##if [ "${RTPP_BRANCH}" != "master" ]
 ##then
-##  git clone -b master --recursive git://github.com/sippy/rtpproxy.git \
+##  git clone -b master --recursive https://github.com/sippy/rtpproxy.git \
 ##   "${RTPPDDIR_m}"
 ##fi
 
@@ -29,12 +29,5 @@ cd rtpproxy
 ${MAKE_CMD} all
 cd ..
 
-git clone git://github.com/sobomax/libelperiodic.git
-cd libelperiodic
-./configure
-make all
-sudo make install
-sudo ldconfig
-python setup.py clean build install
+pip install ElPeriodic
 python -c "from elperiodic.ElPeriodic import ElPeriodic"
-cd ..
