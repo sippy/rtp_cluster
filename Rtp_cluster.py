@@ -100,6 +100,7 @@ class Rtp_cluster(object):
         if len(address) == 2:
             if not dry_run:
                 uopts = Udp_server_opts(address, self.up_command_udp)
+                uopts.nworkers = 2
                 self.ccm = Udp_server(global_config, uopts)
         else:
             sown = global_config.get('_rtpc_sockowner', None)
