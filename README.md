@@ -1,4 +1,4 @@
-[![Test Status](https://travis-ci.com/sippy/rtp_cluster.svg?branch=master)](https://travis-ci.com/sippy/rtp_cluster)
+[![Test Status](https://github.com/sippy/rtp_cluster/actions/workflows/basic.yml/badge.svg?branch=master)](https://github.com/sippy/rtp_cluster/actions/workflows/basic.yml?query=branch%3Amaster++)
 
 # RTP Cluster - a front-end for the distributed RTPproxy network
 
