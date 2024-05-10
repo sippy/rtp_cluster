@@ -53,14 +53,16 @@ class Broadcaster(object):
     results = None
     clim = None
     cmd = None
+    orig_cmd = None
 
-    def __init__(self, bcount, clim, cmd):
+    def __init__(self, bcount, clim, cmd, orig_cmd):
         self.results = []
         self.bcount = bcount
         self.ecount = bcount
         self.nparts = bcount
         self.clim = clim
         self.cmd = cmd
+        self.orig_cmd = orig_cmd
 
 class UdpCLIM(object):
     cookie = None
@@ -167,7 +169,7 @@ class Rtp_cluster(object):
         response_handler = self.down_command
         #print cmd
         if len(self.active) == 0:
-            self.down_command('E999', clim, cmd, None)
+            self.down_command(clim, cmd, orig_cmd, None, 'E999')
             return
         if cmd.type in ('U', 'L', 'D', 'P', 'S', 'R', 'C', 'Q'):
             #print(f'up_command: {cmd.call_id=}, {orig_cmd=}, {str(cmd)=}')
@@ -196,13 +198,13 @@ class Rtp_cluster(object):
                     self.global_config['_sip_logger'].write('Delete request to a ' \
                       '(possibly) offline node "%s", sending fake reply and proceeding ' \
                       'in the background' % rtpp.name)
-                    self.down_command('0', clim, cmd, None)
+                    self.down_command(clim, cmd, orig_cmd, None, '0')
                     response_handler = self.ignore_response
             if rtpp == None and new_session:
                 # New session
                 rtpp = self.pick_proxy(cmd.call_id)
                 if rtpp == None:
-                    self.down_command('E998', clim, cmd, None)
+                    self.down_command(clim, cmd, orig_cmd, None, 'E998')
                     return
                 rtpp.bind_session(cmd.call_id, cmd.type)
             if rtpp != None and cmd.type in ('U', 'L') and cmd.ul_opts.notify_socket != None:
@@ -224,7 +226,7 @@ class Rtp_cluster(object):
                     # Do a forced lookup
                     orig_cmd = 'L%s' % cmd.ul_opts.getstr(cmd.call_id, swaptags = True, skipnotify = True)
                 active = [x for x in self.active if x.online]
-                br = Broadcaster(len(active), clim, cmd)
+                br = Broadcaster(len(active), clim, cmd, orig_cmd)
                 for rtpp in active:
                     if cmd.type in ('U', 'L') and rtpp.lan_address != None:
                         out_cmd = Rtp_proxy_cmd(orig_cmd)
@@ -250,11 +252,11 @@ class Rtp_cluster(object):
                 ptransmitted += rtpp.ptransmitted
             reply = 'sessions created: %d\nactive sessions: %d\nactive streams: %d\npackets received: %d\npackets transmitted: %d' % \
               (sessions_created, active_sessions, active_streams, preceived, ptransmitted)
-            self.down_command(reply, clim, cmd, None)
+            self.down_command(clim, cmd, orig_cmd, None, reply)
             return
         elif cmd.type == 'G':
             active = [x for x in self.active if x.online]
-            br = Broadcaster(len(active), clim, cmd)
+            br = Broadcaster(len(active), clim, cmd, orig_cmd)
             br.sobj = Rtpp_stats(cmd.args.split())
             if cmd.command_opts != None and cmd.command_opts.lower() == 'v':
                 cmd.command_opts = None
@@ -320,14 +322,14 @@ class Rtp_cluster(object):
             return
         if len(br.results) == 1:
             rtpp.bind_session(br.cmd.call_id, br.cmd.type)
-            self.down_command(br.results[0], br.clim, br.cmd, rtpp)
+            self.down_command(br.clim, br.cmd, br.orig_cmd, rtpp, br.results[0])
         else:
             # No results or more than one proxy returns positive
             # XXX: more than one result can probably be handled
             if br.cmd.type in ('U', 'L'):
-                self.down_command('0', br.clim, br.cmd, rtpp)
+                self.down_command(br.clim, br.cmd, br.orig_cmd, rtpp, '0')
             else:
-                self.down_command('E995', br.clim, br.cmd, rtpp)
+                self.down_command(br.clim, br.cmd, br.orig_cmd, rtpp, 'E995')
 
     def merge_stats_results(self, result, br, rtpp):
         #print 'merge_stats_results, result', result
@@ -352,7 +354,7 @@ class Rtp_cluster(object):
             rval = 'E993'
         else:
             rval = str(br.sobj)
-        self.down_command(rval, br.clim, br.cmd, rtpp)
+        self.down_command(br.clim, br.cmd, br.orig_cmd, rtpp, rval)
 
     def pick_proxy(self, call_id):
         active = [(rtpp, rtpp.weight * (1 - rtpp.get_caputil())) \
